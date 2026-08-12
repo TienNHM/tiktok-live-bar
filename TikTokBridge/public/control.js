@@ -1,68 +1,104 @@
-/* ─────────────────────────────────────────────────────────
-   ÔNG CHÚ MMO — Control Panel JS
-   © 2025 ÔNG CHÚ MMO — ongchummo.com
-   Zalo: 0977.896.644 | Website: https://ongchummo.com
-───────────────────────────────────────────────────────── */
+/* TikTok Live Bar — Control Panel */
 
-/* ═══ TAB NAVIGATION ════════════════════════════════════ */
+const USERNAME_KEY = 'tiktok-live-bar.control.username';
+
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+        });
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
         document.getElementById('tab-' + btn.dataset.tab)?.classList.add('active');
+        closeMobileNav();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 });
 
-/* ═══ UI ELEMENT REFS ════════════════════════════════════ */
+const navToggle = document.getElementById('nav-toggle');
+const tabNav = document.getElementById('tab-nav');
+function closeMobileNav() {
+    tabNav?.classList.remove('is-open');
+    if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+}
+navToggle?.addEventListener('click', () => {
+    const open = tabNav.classList.toggle('is-open');
+    navToggle.setAttribute('aria-expanded', String(open));
+});
+
 const ui = {
-    // Navbar status
-    statusDot:      document.getElementById('status-dot'),
-    statusTitle:    document.getElementById('status-title'),
-    // Card status (tab live)
-    statusCardDot:  document.getElementById('status-card-dot'),
-    statusTitleCard:document.getElementById('status-title-card'),
-    statusMessage:  document.getElementById('status-message'),
-    // Live tab
-    username:       document.getElementById('username'),
-    connect:        document.getElementById('connect'),
-    disconnect:     document.getElementById('disconnect'),
-    // Test lab
-    stopDemo:       document.getElementById('stop-demo'),
-    // Session
-    reset:          document.getElementById('reset'),
-    // Events
-    userIndex:      document.getElementById('user-index'),
-    // Rules
-    joinMode:       document.getElementById('join-mode'),
-    giftAlwaysJoins:document.getElementById('gift-always-joins'),
-    masterRules:    document.getElementById('master-rules'),
+    statusDot: document.getElementById('status-dot'),
+    statusTitle: document.getElementById('status-title'),
+    statusCardDot: document.getElementById('status-card-dot'),
+    statusTitleCard: document.getElementById('status-title-card'),
+    statusMessage: document.getElementById('status-message'),
+    statusCardMeta: document.getElementById('status-card-meta'),
+    metaUsername: document.getElementById('meta-username'),
+    username: document.getElementById('username'),
+    connect: document.getElementById('connect'),
+    disconnect: document.getElementById('disconnect'),
+    stopDemo: document.getElementById('stop-demo'),
+    demoState: document.getElementById('demo-state'),
+    reset: document.getElementById('reset'),
+    userIndex: document.getElementById('user-index'),
+    joinMode: document.getElementById('join-mode'),
+    giftAlwaysJoins: document.getElementById('gift-always-joins'),
+    masterRules: document.getElementById('master-rules'),
     masterRuleTemplate: document.getElementById('master-rule-template'),
-    addMasterRule:  document.getElementById('add-master-rule'),
-    saveMaster:     document.getElementById('save-master'),
-    masterMessage:  document.getElementById('master-message'),
-    recentGifts:    document.getElementById('recent-gifts'),
+    addMasterRule: document.getElementById('add-master-rule'),
+    saveMaster: document.getElementById('save-master'),
+    saveMasterSticky: document.getElementById('save-master-sticky'),
+    masterMessage: document.getElementById('master-message'),
+    recentGifts: document.getElementById('recent-gifts'),
+    ruleCount: document.getElementById('rule-count'),
+    toastHost: document.getElementById('toast-host'),
     metrics: {
-        events:   document.getElementById('metric-events'),
-        members:  document.getElementById('metric-members'),
-        chats:    document.getElementById('metric-chats'),
-        gifts:    document.getElementById('metric-gifts'),
+        events: document.getElementById('metric-events'),
+        members: document.getElementById('metric-members'),
+        chats: document.getElementById('metric-chats'),
+        gifts: document.getElementById('metric-gifts'),
         diamonds: document.getElementById('metric-diamonds'),
-        likes:    document.getElementById('metric-likes'),
+        likes: document.getElementById('metric-likes'),
+    },
+    quick: {
+        events: document.getElementById('quick-events'),
+        gifts: document.getElementById('quick-gifts'),
+        diamonds: document.getElementById('quick-diamonds'),
+        members: document.getElementById('quick-members'),
     },
 };
 
-/* ═══ STATE ══════════════════════════════════════════════ */
 let socket;
 let reconnectTimer;
 let masterConfig = { joinMode: 'keyword_only', giftAlwaysJoins: true, rules: [] };
 const recentGifts = new Map();
+let activeUsername = '';
 
-/* ═══ WEBSOCKET ══════════════════════════════════════════ */
+function toast(message, type = 'ok') {
+    if (!ui.toastHost || !message) return;
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.textContent = message;
+    ui.toastHost.append(el);
+    setTimeout(() => {
+        el.classList.add('out');
+        setTimeout(() => el.remove(), 220);
+    }, 2800);
+}
+
+function normalizeUsername(value) {
+    return String(value || '').trim().replace(/^@+/, '');
+}
+
 function send(message) {
     if (socket?.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify(message));
+        return true;
     }
+    toast('Chưa kết nối máy chủ Node. Đang thử lại…', 'err');
+    return false;
 }
 
 function setStatus(data) {
@@ -71,32 +107,52 @@ function setStatus(data) {
     if (ui.statusCardDot) ui.statusCardDot.className = 'status-card-dot ' + state;
 
     const names = {
-        idle:         'Sẵn sàng',
-        connecting:   'Đang kết nối…',
-        connected:    '🔴 LIVE',
-        demo:         '🧪 DEMO',
-        disconnected: 'Mất kết nối',
-        ended:        'Live kết thúc',
-        error:        'Lỗi kết nối',
+        idle: '✅ Sẵn sàng',
+        connecting: '⏳ Đang kết nối…',
+        connected: '🔴 LIVE',
+        demo: '🧪 DEMO',
+        disconnected: '⚠️ Mất kết nối',
+        ended: '⏹ Live kết thúc',
+        error: '❌ Lỗi kết nối',
+        reconnecting: '🔄 Đang kết nối lại…',
     };
     const label = names[state] || state;
     ui.statusTitle.textContent = label;
     if (ui.statusTitleCard) ui.statusTitleCard.textContent = label;
-    if (ui.statusMessage)   ui.statusMessage.textContent = data.message || '';
-    ui.connect.disabled = state === 'connecting';
+    if (ui.statusMessage) ui.statusMessage.textContent = data.message || '';
+    ui.connect.disabled = state === 'connecting' || state === 'reconnecting';
+    ui.connect.classList.toggle('is-busy', state === 'connecting' || state === 'reconnecting');
 
-    // Badge đỏ nhấp nháy khi đang LIVE thật
     const liveBadge = document.getElementById('live-badge');
-    if (liveBadge) liveBadge.classList.toggle('is-live', state === 'connected');
+    if (liveBadge) {
+        liveBadge.classList.toggle('is-live', state === 'connected');
+        liveBadge.classList.toggle('is-demo', state === 'demo');
+    }
+
+    if (ui.demoState) {
+        const demoOn = state === 'demo';
+        ui.demoState.textContent = demoOn ? 'Đang chạy' : 'Đang tắt';
+        ui.demoState.classList.toggle('on', demoOn);
+    }
+
+    if (data.username) activeUsername = normalizeUsername(data.username);
+    if (ui.statusCardMeta && ui.metaUsername) {
+        const showUser = Boolean(activeUsername) && (state === 'connected' || state === 'connecting' || state === 'reconnecting' || state === 'demo');
+        ui.statusCardMeta.hidden = !showUser;
+        ui.metaUsername.textContent = showUser ? `@${activeUsername}` : '';
+    }
 }
 
 function setMetrics(data) {
     for (const [key, el] of Object.entries(ui.metrics)) {
-        el.textContent = Number(data[key] || 0).toLocaleString('vi-VN');
+        if (el) el.textContent = Number(data[key] || 0).toLocaleString('vi-VN');
     }
+    if (ui.quick.events) ui.quick.events.textContent = Number(data.events || 0).toLocaleString('vi-VN');
+    if (ui.quick.gifts) ui.quick.gifts.textContent = Number(data.gifts || 0).toLocaleString('vi-VN');
+    if (ui.quick.diamonds) ui.quick.diamonds.textContent = Number(data.diamonds || 0).toLocaleString('vi-VN');
+    if (ui.quick.members) ui.quick.members.textContent = Number(data.members || 0).toLocaleString('vi-VN');
 }
 
-/* ═══ MASTER RULES ═══════════════════════════════════════ */
 function makeRuleId() {
     return `rule-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -112,20 +168,25 @@ function emptyRule(overrides = {}) {
 function setMasterMessage(msg, error = false) {
     ui.masterMessage.textContent = msg || '';
     ui.masterMessage.classList.toggle('error', error);
+    ui.masterMessage.classList.toggle('ok', Boolean(msg) && !error);
+}
+
+function updateRuleCount() {
+    if (!ui.ruleCount) return;
+    const count = ui.masterRules.querySelectorAll('.master-rule-row').length;
+    ui.ruleCount.textContent = `${count} luật`;
 }
 
 function updateRuleSource(row) {
-    const source  = row.querySelector('[data-field="source"]').value;
-    const giftId  = row.querySelector('[data-field="giftId"]');
-    giftId.disabled     = source !== 'gift';
-    giftId.placeholder  = source === 'gift' ? 'ID (nếu có)' : 'Không dùng cho chat';
-
-    // Cập nhật border + badge màu theo loại
+    const source = row.querySelector('[data-field="source"]').value;
+    const giftId = row.querySelector('[data-field="giftId"]');
+    giftId.disabled = source !== 'gift';
+    giftId.placeholder = source === 'gift' ? 'ID (nếu có)' : 'Không dùng cho chat';
     row.dataset.src = source;
     const badge = row.querySelector('[data-src-label]');
     if (badge) {
         badge.textContent = source === 'gift' ? 'GIFT' : 'CHAT';
-        badge.className   = `src-badge ${source}`;
+        badge.className = `src-badge ${source}`;
     }
 }
 
@@ -139,12 +200,17 @@ function createRuleRow(rule) {
         else input.value = rule[field] ?? '';
     }
     row.querySelector('[data-field="source"]').addEventListener('change', () => updateRuleSource(row));
-    row.querySelector('[data-command="delete"]').addEventListener('click', () => row.remove());
+    row.querySelector('[data-command="delete"]').addEventListener('click', () => {
+        row.remove();
+        updateRuleCount();
+        setMasterMessage('Đã xóa luật khỏi danh sách. Nhớ Lưu & áp dụng.');
+    });
     row.querySelector('[data-command="test"]').addEventListener('click', () => {
         const config = readMasterFromUi();
-        send({ type: 'master_save', master: config });
+        if (!send({ type: 'master_save', master: config })) return;
         send({ type: 'master_test', ruleId: row.dataset.ruleId, diamonds: 100 });
         setMasterMessage('Đang test luật trên Unity…');
+        toast('Đang test luật trên game');
     });
     updateRuleSource(row);
     return row;
@@ -152,30 +218,30 @@ function createRuleRow(rule) {
 
 function renderMaster(config) {
     masterConfig = config || masterConfig;
-    ui.joinMode.value        = masterConfig.joinMode || 'keyword_only';
+    ui.joinMode.value = masterConfig.joinMode || 'keyword_only';
     ui.giftAlwaysJoins.checked = masterConfig.giftAlwaysJoins !== false;
     ui.masterRules.replaceChildren(...(masterConfig.rules || []).map(createRuleRow));
+    updateRuleCount();
 }
 
 function readMasterFromUi() {
     const rules = [...ui.masterRules.querySelectorAll('.master-rule-row')].map(row => ({
-        id:              row.dataset.ruleId,
-        enabled:         row.querySelector('[data-field="enabled"]').checked,
-        source:          row.querySelector('[data-field="source"]').value,
-        trigger:         row.querySelector('[data-field="trigger"]').value.trim(),
-        giftId:          row.querySelector('[data-field="giftId"]').value.trim(),
-        match:           row.querySelector('[data-field="match"]').value,
-        action:          row.querySelector('[data-field="action"]').value,
-        displayDiamonds: Number(row.querySelector('[data-field="displayDiamonds"]').value) || 0,
-        durationMs:      Math.round((Number(row.querySelector('[data-field="durationSeconds"]').value) || 0) * 1000),
-        label:           row.querySelector('[data-field="label"]').value.trim(),
-        variant:         row.querySelector('[data-field="variant"]').value,
-        fireworkBursts:  Number(row.querySelector('[data-field="fireworkBursts"]').value) || 0,
+        id: row.dataset.ruleId,
+        enabled: row.querySelector('[data-field="enabled"]').checked,
+        source: row.querySelector('[data-field="source"]').value,
+        trigger: row.querySelector('[data-field="trigger"]').value.trim(),
+        giftId: row.querySelector('[data-field="giftId"]').value.trim(),
+        match: row.querySelector('[data-field="match"]').value,
+        action: row.querySelector('[data-field="action"]').value,
+        displayDiamonds: Number(row.querySelector('[data-field="displayDiamonds"]')?.value) || 0,
+        durationMs: Math.round((Number(row.querySelector('[data-field="durationSeconds"]').value) || 0) * 1000),
+        label: row.querySelector('[data-field="label"]').value.trim(),
+        variant: row.querySelector('[data-field="variant"]').value,
+        fireworkBursts: Number(row.querySelector('[data-field="fireworkBursts"]').value) || 0,
     }));
     return { joinMode: ui.joinMode.value, giftAlwaysJoins: ui.giftAlwaysJoins.checked, rules };
 }
 
-/* ═══ GIFT CATALOG ═══════════════════════════════════════ */
 function observeGift(data) {
     const key = String(data.giftId || data.giftName || 'gift');
     recentGifts.set(key, data);
@@ -184,6 +250,15 @@ function observeGift(data) {
 }
 
 function renderGiftCatalog() {
+    if (recentGifts.size === 0) {
+        ui.recentGifts.replaceChildren();
+        const empty = document.createElement('span');
+        empty.className = 'empty-state';
+        empty.textContent = 'Chưa nhận gift thật nào. Khi live, gift sẽ tự lưu tại đây.';
+        ui.recentGifts.append(empty);
+        return;
+    }
+
     ui.recentGifts.replaceChildren(
         ...[...recentGifts.values()].reverse().map(gift => {
             const btn = document.createElement('button');
@@ -201,18 +276,26 @@ function renderGiftCatalog() {
             btn.append(span);
             btn.addEventListener('click', () => {
                 ui.masterRules.append(createRuleRow(emptyRule({
-                    source: 'gift', trigger: gift.giftName || '',
+                    source: 'gift',
+                    trigger: gift.giftName || '',
                     giftId: String(gift.giftId || ''),
-                    displayDiamonds: Number(gift.diamondCount) || 0, action: 'dance',
+                    displayDiamonds: Number(gift.diamondCount) || 0,
+                    action: 'dance',
                 })));
-                setMasterMessage('Đã thêm gift vào cuối bảng. Chọn hành động rồi bấm Lưu & áp dụng.');
+                updateRuleCount();
+                setMasterMessage('Đã thêm gift. Chọn hành động rồi Lưu & áp dụng.');
+                toast('Đã thêm luật gift mới');
             });
             return btn;
         })
     );
 }
 
-/* ═══ SOCKET ═════════════════════════════════════════════ */
+function saveMaster() {
+    if (!send({ type: 'master_save', master: readMasterFromUi() })) return;
+    setMasterMessage('Đang lưu và áp dụng…');
+}
+
 function connectSocket() {
     clearTimeout(reconnectTimer);
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -226,17 +309,24 @@ function connectSocket() {
         let data;
         try { data = JSON.parse(event.data); } catch { return; }
         if (data.type === 'status' || data.type === 'error') setStatus(data);
-        if (data.type === 'metrics')        setMetrics(data);
-        if (data.type === 'master_config')  renderMaster(data.master);
-        if (data.type === 'master_saved')   setMasterMessage(data.message || 'Đã lưu Master.');
-        if (data.type === 'gift_observed')  observeGift(data);
+        if (data.type === 'metrics') setMetrics(data);
+        if (data.type === 'master_config') renderMaster(data.master);
+        if (data.type === 'master_saved') {
+            setMasterMessage(data.message || 'Đã lưu Master.');
+            toast(data.message || 'Đã lưu Master Rules');
+        }
+        if (data.type === 'gift_observed') observeGift(data);
         if (data.type === 'gift_catalog') {
             recentGifts.clear();
-            for (const g of data.gifts || [])
+            for (const g of data.gifts || []) {
                 recentGifts.set(String(g.giftId || g.giftName || 'gift'), g);
+            }
             renderGiftCatalog();
         }
-        if (data.type === 'error') setMasterMessage(data.message || 'Có lỗi.', true);
+        if (data.type === 'error') {
+            setMasterMessage(data.message || 'Có lỗi.', true);
+            toast(data.message || 'Có lỗi xảy ra', 'err');
+        }
     });
 
     socket.addEventListener('close', () => {
@@ -247,38 +337,70 @@ function connectSocket() {
     socket.addEventListener('error', () => socket.close());
 }
 
-/* ═══ EVENT LISTENERS ════════════════════════════════════ */
-ui.connect.addEventListener('click', () => {
-    const username = ui.username.value.trim();
-    if (username) send({ type: 'set_username', username });
+function connectLive() {
+    const username = normalizeUsername(ui.username.value);
+    if (!username) {
+        toast('Nhập username TikTok đang live', 'err');
+        ui.username.focus();
+        return;
+    }
+    ui.username.value = username;
+    localStorage.setItem(USERNAME_KEY, username);
+    activeUsername = username;
+    if (send({ type: 'set_username', username })) {
+        toast(`Đang kết nối @${username}`);
+    }
+}
+
+ui.connect.addEventListener('click', connectLive);
+ui.username.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        connectLive();
+    }
 });
-ui.username.addEventListener('keydown', e => { if (e.key === 'Enter') ui.connect.click(); });
-ui.disconnect.addEventListener('click', () => send({ type: 'disconnect_tiktok' }));
-ui.stopDemo.addEventListener('click',   () => send({ type: 'demo_stop' }));
-ui.reset.addEventListener('click',     () => send({ type: 'reset_game' }));
-ui.addMasterRule.addEventListener('click', () => ui.masterRules.append(createRuleRow(emptyRule())));
-ui.saveMaster.addEventListener('click', () => {
-    send({ type: 'master_save', master: readMasterFromUi() });
-    setMasterMessage('Đang lưu và áp dụng…');
+ui.disconnect.addEventListener('click', () => {
+    if (!confirm('Ngắt kết nối TikTok / TikFinity?')) return;
+    if (send({ type: 'disconnect_tiktok' })) toast('Đã gửi lệnh ngắt kết nối');
 });
+ui.stopDemo.addEventListener('click', () => {
+    if (send({ type: 'demo_stop' })) toast('Đã dừng demo');
+});
+ui.reset.addEventListener('click', () => {
+    if (!confirm('Reset toàn bộ phiên game? Người chơi và thống kê sẽ bị xóa.')) return;
+    if (send({ type: 'reset_game' })) toast('Đã reset game');
+});
+ui.addMasterRule.addEventListener('click', () => {
+    ui.masterRules.append(createRuleRow(emptyRule()));
+    updateRuleCount();
+});
+ui.saveMaster.addEventListener('click', saveMaster);
+ui.saveMasterSticky?.addEventListener('click', saveMaster);
 
 document.querySelectorAll('[data-demo-count]').forEach(btn => {
-    btn.addEventListener('click', () =>
-        send({ type: 'demo_start', count: Number(btn.dataset.demoCount) })
-    );
+    btn.addEventListener('click', () => {
+        if (send({ type: 'demo_start', count: Number(btn.dataset.demoCount) })) {
+            toast(`Chạy demo ${btn.dataset.demoCount} người`);
+        }
+    });
 });
 
 document.querySelectorAll('[data-action]').forEach(btn => {
-    btn.addEventListener('click', () =>
-        send({
-            type:      'demo_event',
-            action:    btn.dataset.action,
-            value:     Number(btn.dataset.value) || 1,
-            giftName:  btn.dataset.giftName || '',
+    btn.addEventListener('click', () => {
+        if (send({
+            type: 'demo_event',
+            action: btn.dataset.action,
+            value: Number(btn.dataset.value) || 1,
+            giftName: btn.dataset.giftName || '',
             userIndex: Number(ui.userIndex.value) || 1,
-        })
-    );
+        })) {
+            btn.classList.add('is-busy');
+            setTimeout(() => btn.classList.remove('is-busy'), 180);
+        }
+    });
 });
 
-/* ═══ INIT ═══════════════════════════════════════════════ */
+const savedUsername = localStorage.getItem(USERNAME_KEY);
+if (savedUsername) ui.username.value = normalizeUsername(savedUsername);
+
 connectSocket();
