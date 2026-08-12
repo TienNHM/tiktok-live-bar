@@ -265,24 +265,6 @@ namespace TikTokLiveGame
             light.innerSpotAngle = 24f;
             light.shadows = LightShadows.Soft;
             light.cullingMask = ~(1 << FloorLightingLayer);
-            
-            for (int i = 0; i < 4; i++)
-            {
-                GameObject obj = new($"Disco Light {i}");
-                obj.transform.position = new Vector3(-6f + i * 4f, 6.5f, 5f);
-                obj.transform.rotation = Quaternion.Euler(50f, 180f, 0f);
-                Light l = obj.AddComponent<Light>();
-                l.type = LightType.Spot;
-                l.range = 25f;
-                l.spotAngle = 60f;
-                l.innerSpotAngle = 30f;
-                l.intensity = 0f;
-                l.shadows = LightShadows.Soft;
-                l.cullingMask = -1; 
-                DiscoLight disco = obj.AddComponent<DiscoLight>();
-                disco.index = i;
-                discoLights.Add(disco);
-            }
         }
 
         private static void CreateDjVideoScreen()
