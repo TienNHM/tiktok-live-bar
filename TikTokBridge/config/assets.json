@@ -5,28 +5,85 @@
       "label": "Classic letters",
       "kind": "characters",
       "enabled": true,
-      "folders": ["a", "b", "c", "d", "e", "g", "h", "j", "k"]
+      "folders": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "g",
+        "h",
+        "j",
+        "k"
+      ]
     },
     {
-      "id": "mushroom",
-      "label": "Mushroom",
+      "id": "mushroom-dance",
+      "label": "Mushroom dance set",
       "kind": "characters",
       "enabled": true,
-      "folders": ["mushroom_dance_01", "mushroom_dance_15", "mushroom_magic_02"]
+      "folders": [
+        "mushroom_dance_01",
+        "mushroom_dance_02",
+        "mushroom_dance_03",
+        "mushroom_dance_05",
+        "mushroom_dance_06",
+        "mushroom_dance_08",
+        "mushroom_dance_09",
+        "mushroom_dance_12",
+        "mushroom_dance_13",
+        "mushroom_dance_14",
+        "mushroom_dance_15",
+        "mushroom_dance_16",
+        "mushroom_dance_17",
+        "mushroom_dance_18",
+        "mushroom_dance_19"
+      ]
+    },
+    {
+      "id": "mushroom-magic",
+      "label": "Mushroom magic set",
+      "kind": "characters",
+      "enabled": true,
+      "folders": [
+        "mushroom_magic_02",
+        "mushroom_magic_05",
+        "mushroom_magic_07"
+      ]
     },
     {
       "id": "hanhan",
-      "label": "Hanhan dance",
+      "label": "Hanhan set",
       "kind": "characters",
       "enabled": true,
-      "folders": ["hanhan_video_dance"]
+      "folders": [
+        "hanhan_video_dance"
+      ]
+    },
+    {
+      "id": "pixel-dance",
+      "label": "Pixel dance set (CC0)",
+      "kind": "characters",
+      "enabled": true,
+      "folders": [
+        "pixel_dance_balancing",
+        "pixel_dance_hips",
+        "pixel_dance_skip",
+        "pixel_dance_slide",
+        "pixel_dance_snap"
+      ]
     },
     {
       "id": "banners-default",
       "label": "Default banners",
       "kind": "banners",
       "enabled": true,
-      "variants": ["ice", "neon", "fire", "royal"],
+      "variants": [
+        "ice",
+        "neon",
+        "fire",
+        "royal"
+      ],
       "fallbackVariant": "ice"
     }
   ],
@@ -36,15 +93,18 @@
       "label": "Unity Resources (local)",
       "type": "local",
       "enabled": true,
-      "path": "UnityProject/Assets/Resources"
+      "path": "UnityProject/Assets/Resources",
+      "manifest": "",
+      "notes": ""
     },
     {
-      "id": "gif-catalog",
-      "label": "GIF URL catalog",
+      "id": "gif-mushroom",
+      "label": "Set: Mushroom dance",
       "type": "url-manifest",
-      "enabled": false,
-      "manifest": "assets/gifs/catalog.json",
-      "notes": "Chỉ dùng khi chủ động tải; kiểm tra bản quyền trước"
+      "enabled": true,
+      "path": "",
+      "manifest": "assets/gifs/catalog-mushroom.json",
+      "notes": "Một character set đồng bộ (prefix mushroom_dance_*)."
     }
   ]
 }
