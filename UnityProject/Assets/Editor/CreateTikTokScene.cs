@@ -31,12 +31,9 @@ namespace TikTokLiveGame.Editor
             CreateDjAnimatorController();
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64);
             ForceWindowsX64BuildProfile();
-            string outputPath = Path.GetFullPath("Builds/TikTokLiveGameUnity.exe");
+            string outputPath = Path.GetFullPath(Path.Combine("Builds", $"{SanitizeFileName(PlayerSettings.productName)}.exe"));
             Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-            string[] scenes = System.Array.ConvertAll(
-                System.Array.FindAll(EditorBuildSettings.scenes, scene => scene.enabled),
-                scene => scene.path
-            );
+            string[] scenes = EnabledScenePaths();
             BuildReport report = BuildPipeline.BuildPlayer(scenes, outputPath, BuildTarget.StandaloneWindows64, BuildOptions.None);
             if (report.summary.result != BuildResult.Succeeded)
                 throw new System.InvalidOperationException($"Windows build failed: {report.summary.result}");
@@ -53,25 +50,18 @@ namespace TikTokLiveGame.Editor
             ScriptingImplementation previousBackend = PlayerSettings.GetScriptingBackend(target);
             ManagedStrippingLevel previousStripping = PlayerSettings.GetManagedStrippingLevel(target);
             bool previousStripEngineCode = PlayerSettings.stripEngineCode;
-            string previousCompany = PlayerSettings.companyName;
-            string previousProduct = PlayerSettings.productName;
 
             try
             {
-                PlayerSettings.companyName = "ÔNG CHÚ MMO";
-                PlayerSettings.productName = "ÔNG CHÚ MMO Live";
+                // Branding comes from Edit → Project Settings → Player (company/product).
                 PlayerSettings.SetScriptingBackend(target, ScriptingImplementation.IL2CPP);
                 PlayerSettings.SetManagedStrippingLevel(target, ManagedStrippingLevel.Medium);
                 PlayerSettings.stripEngineCode = true;
 
-                string outputPath = Path.GetFullPath("CommercialBuild/OngChuMMO_Live.exe");
+                string outputPath = Path.GetFullPath(Path.Combine("CommercialBuild", $"{SanitizeFileName(PlayerSettings.productName)}.exe"));
                 Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-                string[] scenes = System.Array.ConvertAll(
-                    System.Array.FindAll(EditorBuildSettings.scenes, scene => scene.enabled),
-                    scene => scene.path
-                );
                 BuildReport report = BuildPipeline.BuildPlayer(
-                    scenes,
+                    EnabledScenePaths(),
                     outputPath,
                     BuildTarget.StandaloneWindows64,
                     BuildOptions.CompressWithLz4HC
@@ -84,10 +74,24 @@ namespace TikTokLiveGame.Editor
                 PlayerSettings.SetScriptingBackend(target, previousBackend);
                 PlayerSettings.SetManagedStrippingLevel(target, previousStripping);
                 PlayerSettings.stripEngineCode = previousStripEngineCode;
-                PlayerSettings.companyName = previousCompany;
-                PlayerSettings.productName = previousProduct;
                 AssetDatabase.SaveAssets();
             }
+        }
+
+        private static string[] EnabledScenePaths()
+        {
+            return System.Array.ConvertAll(
+                System.Array.FindAll(EditorBuildSettings.scenes, scene => scene.enabled),
+                scene => scene.path
+            );
+        }
+
+        private static string SanitizeFileName(string name)
+        {
+            string value = string.IsNullOrWhiteSpace(name) ? "TikTokLiveBar" : name.Trim();
+            foreach (char invalid in Path.GetInvalidFileNameChars())
+                value = value.Replace(invalid.ToString(), string.Empty);
+            return value.Replace(" ", string.Empty);
         }
 
         public static void DumpWindowsBuildArchitecture()

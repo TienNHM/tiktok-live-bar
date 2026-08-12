@@ -209,7 +209,7 @@ namespace TikTokLiveGame
         private void DrawHeader(float width)
         {
             GUI.Box(new Rect(18, 16, width - 36, 58), GUIContent.none, panelStyle);
-            GUI.Label(new Rect(34, 23, 245, 28), "ÔNG CHÚ MMO", titleStyle);
+            GUI.Label(new Rect(34, 23, 245, 28), Application.productName, titleStyle);
             string node = client != null && client.IsConnected ? "NODE ONLINE" : "NODE OFFLINE";
             GUI.Label(new Rect(275, 29, 95, 22), node, smallStyle);
             if (width > 900f) GUI.Label(new Rect(width - 250, 24, 230, 24), "F1 CONTROL   F2 CHROMA", smallStyle);
