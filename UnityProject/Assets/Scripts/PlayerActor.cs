@@ -402,7 +402,12 @@ namespace TikTokLiveGame
 
         public void ChangeCharacter()
         {
-            (string nextName, Sprite[] frames) = CharacterLibrary.RandomCharacter(characterName);
+            int maxRank = CharacterLibrary.MaxRarityRankForGiftPower(GiftPower);
+            (string nextName, Sprite[] frames) = CharacterLibrary.PickCharacter(characterName, maxRank);
+            if (frames == null || frames.Length == 0)
+            {
+                (nextName, frames) = CharacterLibrary.RandomCharacter(characterName);
+            }
             characterName = nextName;
             flipbook.SetFrames(frames, nextName == "hanhan_video_dance" ? 15f : Random.Range(10f, 14f));
             characterBaseScale = Vector3.one * CharacterScale() * GiftPowerScale() * lineupScale;

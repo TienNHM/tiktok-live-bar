@@ -36,6 +36,35 @@ namespace TikTokLiveGame
         public string[] characterFolders;
         public string[] bannerVariants;
         public string fallbackBannerVariant;
+        public CharacterRosterEntry[] roster;
+        public RarityThreshold[] rarityThresholds;
+    }
+
+    [Serializable]
+    public class CharacterRosterEntry
+    {
+        public string id;
+        public string displayName;
+        public string line;
+        public string vibe;
+        public string rarity;
+        public int rarityRank;
+        public string folder;
+        public string status;
+        public string outfit;
+        public string hair;
+        public string shoes;
+        public string accessory;
+        public string dance;
+        public string entranceVfx;
+        public string victoryVfx;
+    }
+
+    [Serializable]
+    public class RarityThreshold
+    {
+        public string rarity;
+        public int minimum;
     }
 
     [Serializable]

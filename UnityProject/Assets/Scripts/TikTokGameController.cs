@@ -65,6 +65,7 @@ namespace TikTokLiveGame
             if (liveEvent.type == "assets_config")
             {
                 CharacterLibrary.ApplyEnabledFolders(liveEvent.characterFolders);
+                CharacterLibrary.ApplyRoster(liveEvent.roster, liveEvent.rarityThresholds);
                 BannerCatalog.ApplyConfig(liveEvent.bannerVariants, liveEvent.fallbackBannerVariant);
                 return;
             }
