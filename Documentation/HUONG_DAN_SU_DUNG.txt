@@ -1,57 +1,51 @@
-ONG CHU MMO LIVE - HUONG DAN SU DUNG
+TIKTOK LIVE BAR - HƯỚNG DẪN SỬ DỤNG
 
-1. Nhan dup run.bat (hoac START_UNITY_GAME.cmd).
-2. Cho game mo va hien NODE ONLINE.
-3. Thu nhanh bang DEMO 30 hoac DEMO 200.
-4. Ket noi live that: nhap TikTok username dang live, khong nhap dau @, roi bam KET NOI.
+1. Nhấn đúp run.bat (hoặc START_UNITY_GAME.cmd).
+2. Chờ game mở và hiện NODE ONLINE.
+3. Thử nhanh bằng DEMO 30 hoặc DEMO 200.
+4. Kết nối live thật: nhập TikTok username đang live, không nhập dấu @, rồi bấm KẾT NỐI.
 
-KET NOI LIVE THAT
+KẾT NỐI LIVE THẬT
 
-Nguoi xem gui chat, like, follow, share hoac gift se thay NPC tren san.
-Ten va avatar TikTok duoc cap nhat tu dong; neu TikTok chua tra anh, game dung avatar du phong de khong bi o den.
-Neu Node hoac duong truyen bi mat tam thoi, game va cau noi TikTok se tu ket noi lai.
-Khong can dong game khi bi rot mang ngan han.
+Người xem gửi chat, like, follow, share hoặc gift sẽ thấy NPC trên sàn.
+Tên và avatar TikTok được cập nhật tự động; nếu TikTok chưa trả ảnh, game dùng avatar dự phòng để không bị ô đen.
+Nếu Node hoặc đường truyền bị mất tạm thời, game và cầu nối TikTok sẽ tự kết nối lại.
+Không cần đóng game khi bị rớt mạng ngắn hạn.
 
-PHIM TAT
+PHÍM TẮT
 
-F1  An/hien bang dieu khien.
-F2  Bat/tat nen xanh chroma de ghep OBS.
-F11 Bat/tat toan man hinh.
+F1  Ẩn/hiện bảng điều khiển.
+F2  Bật/tắt nền xanh chroma để ghép OBS.
+F11 Bật/tắt toàn màn hình.
 
-LENH CHAT
+LỆNH CHAT
 
-nhay / dance   Nhan vat nhay.
-di vong / walk Nhan vat nhay buoc tai cho, khong roi vi tri.
-doi nv         Doi nhan vat.
+nhảy / dance   Nhân vật nhảy.
+đi vòng / walk Nhân vật nhảy bước tại chỗ, không rời vị trí.
+đổi nv         Đổi nhân vật.
 
-KHI CO GIFT
+KHI CÓ GIFT
 
-Camera zoom vao dung vi tri cua nguoi tang qua.
-Top 1, Top 2 va Top 3 dung tren ba buc rieng ngay truoc ban DJ.
-Nguoi choi binh thuong luon mo va trong suot de tao cam giac dam dong.
-Khi mot nguoi tang qua, nguoi do se sang ro va camera zoom lai.
-Nguoi tang hien ten, avatar, banner, canh va hieu ung theo gia tri gift.
-Sau khi hieu ung ket thuc, nguoi khong thuoc Top 3 se tro lai trang thai mo.
+Camera zoom vào đúng vị trí của người tặng quà.
+Top 1, Top 2 và Top 3 đứng trên ba bục riêng ngay trước bàn DJ.
+Người chơi bình thường luôn mờ và trong suốt để tạo cảm giác đông đúc.
+Khi một người tặng quà, người đó sẽ sáng rõ và camera zoom lại.
+Người tặng hiện tên, avatar, banner, cánh và hiệu ứng theo giá trị gift.
+Sau khi hiệu ứng kết thúc, người không thuộc Top 3 sẽ trở lại trạng thái mờ.
 
 OBS
 
-Capture cua so OngChuMMO_Live.exe bang Game Capture.
-Neu muon ghep len video, bam F2 va dung Chroma Key mau xanh trong OBS.
-Nhac duoc mo rieng trong OBS hoac TikTok Live Studio.
+Capture cửa sổ TikTokLiveBar.exe bằng Game Capture.
+Nếu muốn ghép lên video, bấm F2 và dùng Chroma Key màu xanh trong OBS.
+Nhạc được mở riêng trong OBS hoặc TikTok Live Studio.
 
 VIDEO DJ
 
-Tha file MP4, MOV, M4V hoac WebM vao thu muc DJ_VIDEO.
-Game tu phat lap video tren man hinh sau ban DJ va luon tat am thanh video.
-Nen dung video 16:9, do phan giai 1280x720 hoac 1920x1080.
+Thả file MP4, MOV, M4V hoặc WebM vào thư mục DJ_VIDEO.
+Game tự phát lặp video trên màn hình sau bàn DJ và luôn tắt âm thanh video.
+Nên dùng video 16:9, độ phân giải 1280x720 hoặc 1920x1080.
 
-LOG LOI
+LOG LỖI
 
-Neu game khong mo, xem file:
+Nếu game không mở, xem file:
 UnityProject/Logs/player.log
-
-LIEN HE
-
-Website : https://ongchummo.com
-Zalo    : 0977.896.644
-Email   : toanhvan90@gmail.com

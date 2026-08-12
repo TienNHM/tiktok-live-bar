@@ -2,7 +2,7 @@
   "name": "tiktoklivegame",
   "version": "1.0.0",
   "private": true,
-  "description": "ÔNG CHÚ MMO — TikTok Live Game 3D Bridge | ongchummo.com",
+  "description": "TikTok Live Bar — TikTok Live Game 3D Bridge",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -12,7 +12,7 @@
     "test": "npm run check && node --test"
   },
   "keywords": [],
-  "author": "ÔNG CHÚ MMO <https://ongchummo.com>",
+  "author": "TienNHM",
   "license": "MIT",
   "engines": {
     "node": ">=20"

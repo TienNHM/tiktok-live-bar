@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 ÔNG CHÚ MMO — https://ongchummo.com
+Copyright (c) 2026 TienNHM
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,25 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-───────────────────────────────────────────────────────────
-GHI CHÚ BỔ SUNG
-
-1. Source được chia sẻ theo giấy phép MIT — bạn được tự do sử dụng, sửa đổi,
-   đổi thương hiệu, build, vận hành và thương mại hóa sản phẩm.
-
-2. Tài nguyên bên thứ ba (GIF, hình ảnh, font) trong thư mục assets/
-   có thể tuân theo giấy phép riêng của nhà cung cấp gốc.
-   Vui lòng kiểm tra file sources.json trong từng thư mục.
-
-3. Thư mục DJ_MUSIC/ và DJ_VIDEO/ không kèm file media.
-   Người dùng tự thêm nhạc và video có bản quyền hợp lệ.
-
-4. Source được cung cấp theo hiện trạng (AS IS), không kèm hỗ trợ kỹ thuật
-   và không đảm bảo cập nhật.
-
-Liên hệ:
-  Website : https://ongchummo.com
-  Zalo    : 0977.896.644
-  Email   : toanhvan90@gmail.com
-───────────────────────────────────────────────────────────

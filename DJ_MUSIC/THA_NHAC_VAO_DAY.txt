@@ -1,14 +1,14 @@
-THA NHAC NEN VAO THU MUC NAY
+THẢ NHẠC NỀN VÀO THƯ MỤC NÀY
 
-- Ho tro on dinh: MP3, WAV, OGG.
-- Neu dang co M4A/AAC, hay doi sang MP3 truoc khi dua vao game.
-- Nhac duoc phat theo thu tu ten file.
-- Het danh sach se quay lai bai dau.
-- Neu chi co mot bai, bai do se lap vo han.
-- Neu audio bi dung/loi, watchdog se tu khoi phuc hoac chuyen bai.
-- Game van phat tieng gift/phao hoa chong len nhac binh thuong.
+- Hỗ trợ ổn định: MP3, WAV, OGG.
+- Nếu đang có M4A/AAC, hãy đổi sang MP3 trước khi đưa vào game.
+- Nhạc được phát theo thứ tự tên file.
+- Hết danh sách sẽ quay lại bài đầu.
+- Nếu chỉ có một bài, bài đó sẽ lặp vô hạn.
+- Nếu audio bị đứng/lỗi, watchdog sẽ tự khôi phục hoặc chuyển bài.
+- Game vẫn phát tiếng gift/pháo hoa chồng lên nhạc bình thường.
 
-AM LUONG
+ÂM LƯỢNG
 
-Mo VOLUME.txt va nhap tu 0 den 100. Mac dinh la 35.
-Sau khi thay nhac hoac am luong, tat game va mo lai.
+Mở VOLUME.txt và nhập từ 0 đến 100. Mặc định là 35.
+Sau khi thay nhạc hoặc âm lượng, tắt game và mở lại.

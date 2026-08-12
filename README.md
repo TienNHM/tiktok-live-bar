@@ -1,4 +1,4 @@
-# 🎵 ÔNG CHÚ MMO — TikTok Live 3D Dance Floor
+# TikTok Live Bar — TikTok Live 3D Dance Floor
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20-green.svg)](https://nodejs.org/)
@@ -8,19 +8,19 @@
 
 ---
 
-## ✨ Tính năng
+## Tính năng
 
-- 🕺 **Sàn nhảy 3D realtime** — Người xem TikTok tham gia sàn nhảy với nhân vật 3D
-- 🎁 **Gift → Hiệu ứng** — Mỗi gift kích hoạt hiệu ứng riêng (zoom camera, pháo hoa, VIP spotlight...)
-- 🏆 **Bảng xếp hạng Top 3** — Top gifter đứng trên bục DJ
-- 🎵 **DJ Booth** — Phát nhạc + video nền tùy chỉnh
-- ⚙️ **Master Rules** — Tùy chỉnh luật game qua giao diện web, không cần code
-- 🧪 **Test Lab** — Demo mode với người xem giả để test trước khi live
-- 🎨 **Chroma Key** — Bấm F2 để bật nền xanh, ghép vào OBS dễ dàng
+- **Sàn nhảy 3D realtime** — Người xem TikTok tham gia sàn nhảy với nhân vật 3D
+- **Gift → Hiệu ứng** — Mỗi gift kích hoạt hiệu ứng riêng (zoom camera, pháo hoa, VIP spotlight...)
+- **Bảng xếp hạng Top 3** — Top gifter đứng trên bục DJ
+- **DJ Booth** — Phát nhạc + video nền tùy chỉnh
+- **Master Rules** — Tùy chỉnh luật game qua giao diện web, không cần code
+- **Test Lab** — Demo mode với người xem giả để test trước khi live
+- **Chroma Key** — Bấm F2 để bật nền xanh, ghép vào OBS dễ dàng
 
 ---
 
-## 📋 Yêu cầu hệ thống
+## Yêu cầu hệ thống
 
 | Phần mềm | Phiên bản |
 |-----------|-----------|
@@ -32,7 +32,7 @@
 
 ---
 
-## 🚀 Cài đặt & Chạy
+## Cài đặt & Chạy
 
 ### Cách nhanh nhất trên Windows
 
@@ -45,8 +45,8 @@ khởi động TikTok Bridge, mở game và Control Panel.
 ### Bước 1 — Clone repo
 
 ```bash
-git clone https://github.com/<your-username>/ongchummo-tiktok-live.git
-cd ongchummo-tiktok-live
+git clone https://github.com/TienNHM/tiktok-live-bar.git
+cd tiktok-live-bar
 ```
 
 ### Chạy thủ công — Cài đặt Node Bridge
@@ -74,7 +74,7 @@ Truy cập [http://127.0.0.1:3000/control.html](http://127.0.0.1:3000/control.ht
 
 ---
 
-## 📁 Cấu trúc thư mục
+## Cấu trúc thư mục
 
 ```
 ├── TikTokBridge/          # Node.js backend — bridge TikTok ↔ Unity
@@ -86,12 +86,12 @@ Truy cập [http://127.0.0.1:3000/control.html](http://127.0.0.1:3000/control.ht
 │   └── test/              # Unit tests
 │
 ├── UnityProject/          # Unity 6 — Game 3D
-│   ├── Assets/Scripts/    # C# scripts (24 files)
+│   ├── Assets/Scripts/    # C# scripts
 │   └── Assets/Editor/     # Editor tools & build script
 │
-├── DJ_MUSIC/              # 🎵 Thả file nhạc MP3/WAV/OGG vào đây
-├── DJ_VIDEO/              # 🎬 Thả file video MP4/PNG vào đây
-├── LiveAssets/             # Hình nền, GIF hiệu ứng
+├── DJ_MUSIC/              # Thả file nhạc MP3/WAV/OGG vào đây
+├── DJ_VIDEO/              # Thả file video MP4/PNG vào đây
+├── LiveAssets/            # Hình nền, GIF hiệu ứng
 ├── Build/                 # (Không có trong repo) File build compiled
 │
 ├── build.bat              # Script build Unity → EXE
@@ -102,7 +102,7 @@ Truy cập [http://127.0.0.1:3000/control.html](http://127.0.0.1:3000/control.ht
 
 ---
 
-## ⌨️ Phím tắt trong Game
+## Phím tắt trong Game
 
 | Phím | Chức năng |
 |------|-----------|
@@ -112,7 +112,7 @@ Truy cập [http://127.0.0.1:3000/control.html](http://127.0.0.1:3000/control.ht
 
 ---
 
-## 💬 Lệnh chat người xem
+## Lệnh chat người xem
 
 | Lệnh | Hiệu ứng |
 |-------|-----------|
@@ -122,33 +122,33 @@ Truy cập [http://127.0.0.1:3000/control.html](http://127.0.0.1:3000/control.ht
 
 ---
 
-## 🎁 Hệ thống Gift
+## Hệ thống Gift
 
 | Mức gift | Kim cương | Hiệu ứng |
 |----------|-----------|-----------|
-| Gift nhỏ | 1–9 💎 | Nhân vật nhảy, vào sàn |
-| Gift trung | 10–99 💎 | Zoom camera, đổi nhân vật |
-| Gift VIP | 100+ 💎 | Spotlight, pháo hoa, top DJ |
+| Gift nhỏ | 1–9 | Nhân vật nhảy, vào sàn |
+| Gift trung | 10–99 | Zoom camera, đổi nhân vật |
+| Gift VIP | 100+ | Spotlight, pháo hoa, top DJ |
 
-> Tùy chỉnh qua **Master Rules** trong Control Panel → tab ⚙️ Master Rules.
+> Tùy chỉnh qua **Master Rules** trong Control Panel.
 
 ---
 
-## 🎵 Thêm nhạc & video
+## Thêm nhạc & video
 
 - **Nhạc nền DJ:** Thả file `.mp3`, `.wav`, `.ogg` vào thư mục `DJ_MUSIC/`
 - **Video nền:** Thả file `.mp4`, `.mov`, `.webm` hoặc ảnh `.png`, `.jpg` vào `DJ_VIDEO/`
 - Game tự phát lặp và tắt tiếng video
 
-> ⚠️ Hãy sử dụng nhạc và video có bản quyền hợp lệ.
+> Hãy sử dụng nhạc và video có bản quyền hợp lệ.
 
 ---
 
-## 🔧 Tùy chỉnh nâng cao
+## Tùy chỉnh nâng cao
 
 ### Master Rules (không cần code)
 
-Mở Control Panel → tab **⚙️ Master Rules** để:
+Mở Control Panel → tab **Master Rules** để:
 - Thêm/sửa luật: Gift nào → hiệu ứng gì
 - Chọn chế độ tham gia sàn (chat keyword hoặc mọi tương tác)
 - Bật/tắt tự động vào sàn khi tặng gift
@@ -168,7 +168,7 @@ ALLOW_LAN=0
 
 ---
 
-## 🧪 Test
+## Test
 
 ```bash
 cd TikTokBridge
@@ -180,30 +180,16 @@ Hoặc dùng **Test Lab** trong Control Panel để tạo người xem giả.
 
 ---
 
-## 📺 Ghép vào OBS
+## Ghép vào OBS
 
-1. Thêm source **Game Capture** → chọn cửa sổ ÔNG CHÚ MMO Live
+1. Thêm source **Game Capture** → chọn cửa sổ TikTok Live Bar
 2. Bấm **F2** trong game để bật Chroma Key (nền xanh)
 3. Trong OBS: thêm filter **Chroma Key** → chọn màu xanh
 
 ---
 
-## 📜 Giấy phép
+## Giấy phép
 
 Dự án được phát hành theo [Giấy phép MIT](LICENSE).
 
 Tài nguyên bên thứ ba (GIF, hình ảnh) có thể có giấy phép riêng — xem `sources.json` trong từng thư mục assets.
-
----
-
-## 📞 Liên hệ
-
-- 🌐 Website: [ongchummo.com](https://ongchummo.com)
-- 📱 Zalo: 0977.896.644
-- 📧 Email: toanhvan90@gmail.com
-
----
-
-<p align="center">
-  Made with ❤️ by <strong>ÔNG CHÚ MMO</strong>
-</p>
