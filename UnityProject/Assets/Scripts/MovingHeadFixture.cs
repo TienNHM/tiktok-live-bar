@@ -27,6 +27,8 @@ namespace TikTokLiveGame
         private float baseStartWidth;
         private float baseEndWidth;
 
+        public Light light => spot;
+
         public void Initialize(Vector3 fixtureOrigin, Color color, float fixturePhase, MovingHeadStyle fixtureStyle, bool castsLight)
         {
             origin = fixtureOrigin;
