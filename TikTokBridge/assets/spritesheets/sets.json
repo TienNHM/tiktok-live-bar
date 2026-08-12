@@ -1,0 +1,37 @@
+{
+  "note": "Chỉ pack nhảy/múa phù hợp TikTok dance bar. Chạy: npm run import:sprites",
+  "packs": [
+    {
+      "packId": "pixel-dance",
+      "packLabel": "Pixel dance set (CC0)",
+      "license": "CC0 — opengameart.org/content/dancing-girl-sprites",
+      "characters": [
+        {
+          "id": "pixel_dance_balancing",
+          "type": "frames",
+          "dir": "sets/pixel_dance/pixel_dance_balancing"
+        },
+        {
+          "id": "pixel_dance_hips",
+          "type": "frames",
+          "dir": "sets/pixel_dance/pixel_dance_hips"
+        },
+        {
+          "id": "pixel_dance_skip",
+          "type": "frames",
+          "dir": "sets/pixel_dance/pixel_dance_skip"
+        },
+        {
+          "id": "pixel_dance_slide",
+          "type": "frames",
+          "dir": "sets/pixel_dance/pixel_dance_slide"
+        },
+        {
+          "id": "pixel_dance_snap",
+          "type": "frames",
+          "dir": "sets/pixel_dance/pixel_dance_snap"
+        }
+      ]
+    }
+  ]
+}
