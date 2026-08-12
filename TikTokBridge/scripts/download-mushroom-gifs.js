@@ -20,7 +20,12 @@ const excludedAssetUrls = new Set([
     'https://wx1.sinaimg.cn/large/62528dc5gy1fdufbcll3ug207v07vdgg.gif',
     'https://wx1.sinaimg.cn/large/62528dc5gy1fduf8botaag207v07r3zc.gif',
     'https://wx3.sinaimg.cn/large/006BkP2Hly1fds70h3ue3g304x04xjtz.gif',
-    'https://media.giphy.com/media/GR1rLRFEaxnR9sfR3z/giphy.gif'
+    'https://media.giphy.com/media/GR1rLRFEaxnR9sfR3z/giphy.gif',
+    // User flagged: không phù hợp làm nhân vật sàn nhảy
+    'https://media.giphy.com/media/1ynmJnZbDvTBJtho1K/giphy.gif',
+    'https://media.giphy.com/media/dvCPWYNNaaQpjrpl0d/giphy.gif',
+    'https://media.giphy.com/media/dvCPWYNNaaQpjrpl0d/200.gif',
+    'https://media.giphy.com/media/1NRaZ4REktLkjUi5p7/giphy.gif'
 ]);
 
 function isGif(buffer) {
@@ -87,22 +92,37 @@ function hasTransparentFrame(buffer) {
 }
 
 async function download(url, referer) {
-    const response = await fetch(url, {
-        redirect: 'follow',
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36',
-            Referer: referer
-        },
-        signal: AbortSignal.timeout(20_000)
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const candidates = [url];
+    // Giphy full GIFs đôi khi >1.5MB — thử bản nhỏ hơn
+    const giphyFull = url.match(/^(https:\/\/media\.giphy\.com\/media\/[^/]+)\/giphy\.gif$/i);
+    if (giphyFull) {
+        candidates.push(`${giphyFull[1]}/200.gif`, `${giphyFull[1]}/200w.gif`, `${giphyFull[1]}/giphy-preview.gif`);
+    }
 
-    const buffer = Buffer.from(await response.arrayBuffer());
-    if (!isGif(buffer)) throw new Error('Nội dung tải về không phải GIF');
-    if (buffer.length > maxGifBytes) throw new Error('GIF quá nặng để dùng cho sàn đông người');
-    if (countGifFrames(buffer) < 2) throw new Error('GIF chỉ có một frame tĩnh');
-    if (!hasTransparentFrame(buffer)) throw new Error('GIF không có nền trong suốt');
-    return buffer;
+    let lastError = new Error('Không tải được GIF');
+    for (const candidate of candidates) {
+        try {
+            const response = await fetch(candidate, {
+                redirect: 'follow',
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36',
+                    Referer: referer || 'https://giphy.com/'
+                },
+                signal: AbortSignal.timeout(20_000)
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const buffer = Buffer.from(await response.arrayBuffer());
+            if (!isGif(buffer)) throw new Error('Nội dung tải về không phải GIF');
+            if (buffer.length > maxGifBytes) throw new Error('GIF quá nặng để dùng cho sàn đông người');
+            if (countGifFrames(buffer) < 2) throw new Error('GIF chỉ có một frame tĩnh');
+            if (!hasTransparentFrame(buffer)) throw new Error('GIF không có nền trong suốt');
+            return buffer;
+        } catch (error) {
+            lastError = error;
+        }
+    }
+    throw lastError;
 }
 
 async function loadEnabledCatalogs() {
@@ -111,7 +131,7 @@ async function loadEnabledCatalogs() {
     const enabled = sources.filter(source => source?.type === 'url-manifest' && source?.enabled === true);
     if (enabled.length === 0) {
         console.warn('Không có source url-manifest nào đang bật trong config/assets.json.');
-        console.warn('Bật source "gif-catalog" trên tab Assets (Control Panel) rồi lưu, hoặc sửa assets.json.');
+        console.warn('Bật source trên tab Assets (Control Panel) rồi lưu, hoặc sửa assets.json.');
         return [];
     }
 
@@ -137,7 +157,40 @@ async function loadEnabledCatalogs() {
     return catalogs;
 }
 
+function filenamePrefix(sourceId) {
+    const id = String(sourceId || 'gif').toLowerCase();
+    if (id === 'gif-catalog') return 'mushroom_dance';
+    if (id === 'gif-mushroom') return 'mushroom_dance';
+    if (id === 'gif-free-popular') return 'free_dance';
+    return id.replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') || 'gif';
+}
+
+async function loadExistingManifest() {
+    try {
+        const raw = JSON.parse(await fs.readFile(path.join(outputDir, 'sources.json'), 'utf8'));
+        return Array.isArray(raw) ? raw : [];
+    } catch {
+        return [];
+    }
+}
+
+async function nextAvailableFilename(prefix, startIndex) {
+    let index = startIndex;
+    while (true) {
+        const filename = `${prefix}_${String(index).padStart(2, '0')}.gif`;
+        const target = path.join(outputDir, filename);
+        try {
+            await fs.access(target);
+            index += 1;
+        } catch {
+            return { filename, target, index };
+        }
+    }
+}
+
 async function main() {
+    const force = process.argv.includes('--force');
+    const prune = process.argv.includes('--prune');
     const catalogs = await loadEnabledCatalogs();
     if (catalogs.length === 0) {
         process.exitCode = 1;
@@ -145,90 +198,119 @@ async function main() {
     }
 
     await fs.mkdir(outputDir, { recursive: true });
-    const manifest = [];
-    const contentHashes = new Set();
-    let index = 0;
+    const previousManifest = await loadExistingManifest();
+    const manifestByFile = new Map(previousManifest.map(item => [item.filename, item]));
+    const contentHashes = new Set(
+        previousManifest.map(item => item.sha256).filter(Boolean)
+    );
+    // hash các file đang có trên đĩa (kể cả chưa nằm trong sources.json)
+    for (const name of await fs.readdir(outputDir)) {
+        if (!/\.gif$/i.test(name)) continue;
+        try {
+            const buffer = await fs.readFile(path.join(outputDir, name));
+            if (isGif(buffer)) contentHashes.add(crypto.createHash('sha256').update(buffer).digest('hex'));
+        } catch {
+            // ignore
+        }
+    }
+
+    let attempted = 0;
+    let written = 0;
+    let skipped = 0;
 
     for (const catalog of catalogs) {
+        const prefix = filenamePrefix(catalog.id);
+        let sequence = 1;
         for (const source of catalog.entries) {
             const urls = Array.isArray(source.urls) ? source.urls : [];
             for (const url of urls) {
-                index += 1;
-                const filename = `mushroom_dance_${String(index).padStart(2, '0')}.gif`;
-                const target = path.join(outputDir, filename);
+                attempted += 1;
                 if (source.staticOnly) {
-                    console.warn(`− ${filename}: bỏ qua nguồn chỉ có ảnh GIF một frame`);
+                    console.warn(`− bỏ qua nguồn chỉ có ảnh GIF một frame (${url})`);
+                    skipped += 1;
                     continue;
                 }
                 if (excludedAssetUrls.has(url)) {
-                    console.warn(`− ${filename}: bỏ qua asset không phù hợp làm nhân vật`);
+                    console.warn(`− bỏ qua (blacklist): ${url}`);
+                    skipped += 1;
                     continue;
                 }
+
+                // đã tải URL này trước đó → giữ nguyên file cũ
+                const known = [...manifestByFile.values()].find(item => item.assetUrl === url);
+                if (known && !force) {
+                    console.warn(`= ${known.filename}: đã có URL này, bỏ qua`);
+                    skipped += 1;
+                    continue;
+                }
+
+                const { filename, target, index } = await nextAvailableFilename(prefix, sequence);
+                sequence = index + 1;
+
                 try {
                     const buffer = await download(url, source.page || '');
                     const hash = crypto.createHash('sha256').update(buffer).digest('hex');
-                    if (contentHashes.has(hash)) {
-                        console.warn(`= ${filename}: bỏ qua nội dung trùng`);
+                    if (contentHashes.has(hash) && !force) {
+                        console.warn(`= bỏ qua nội dung trùng (${url})`);
+                        skipped += 1;
                         continue;
                     }
+
+                    if (!force) {
+                        try {
+                            await fs.access(target);
+                            console.warn(`= ${filename}: đã tồn tại, không ghi đè (dùng --force nếu chắc chắn)`);
+                            skipped += 1;
+                            continue;
+                        } catch {
+                            // ok to write
+                        }
+                    }
+
                     contentHashes.add(hash);
                     await fs.writeFile(target, buffer);
-                    manifest.push({
+                    const entry = {
                         filename,
                         bytes: buffer.length,
                         sha256: hash,
                         sourcePage: source.page || '',
                         assetUrl: url,
                         sourceId: catalog.id
-                    });
+                    };
+                    manifestByFile.set(filename, entry);
+                    written += 1;
                     console.log(`✓ ${filename} (${Math.round(buffer.length / 1024)} KB)`);
                 } catch (error) {
-                    try {
-                        const previous = await fs.readFile(target);
-                        if (
-                            !isGif(previous) ||
-                            previous.length > maxGifBytes ||
-                            countGifFrames(previous) < 2 ||
-                            !hasTransparentFrame(previous)
-                        ) {
-                            throw new Error();
-                        }
-                        const hash = crypto.createHash('sha256').update(previous).digest('hex');
-                        if (contentHashes.has(hash)) throw new Error();
-                        contentHashes.add(hash);
-                        manifest.push({
-                            filename,
-                            bytes: previous.length,
-                            sha256: hash,
-                            sourcePage: source.page || '',
-                            assetUrl: url,
-                            sourceId: catalog.id
-                        });
-                        console.warn(`≈ ${filename}: giữ bản hợp lệ đã tải trước đó`);
-                    } catch {
-                        console.warn(`✗ ${filename}: ${error.message}`);
-                    }
+                    console.warn(`✗ ${filename}: ${error.message}`);
+                    skipped += 1;
                 }
             }
         }
     }
 
+    // chỉ prune khi user chủ động yêu cầu
+    if (prune) {
+        const keep = new Set(manifestByFile.keys());
+        for (const filename of await fs.readdir(outputDir)) {
+            if (!/^(mushroom_dance|free_dance)_\d+\.gif$/i.test(filename)) continue;
+            if (keep.has(filename)) continue;
+            await fs.rm(path.join(outputDir, filename), { force: true });
+            console.warn(`⌫ đã xóa ${filename} (--prune)`);
+        }
+    }
+
+    const manifest = [...manifestByFile.values()].sort((a, b) =>
+        String(a.filename).localeCompare(String(b.filename), undefined, { numeric: true })
+    );
     await fs.writeFile(
         path.join(outputDir, 'sources.json'),
         `${JSON.stringify(manifest, null, 2)}\n`,
         'utf8'
     );
 
-    const acceptedFiles = new Set(manifest.map(item => item.filename));
-    const outputFiles = await fs.readdir(outputDir);
-    for (const filename of outputFiles) {
-        if (/^mushroom_dance_\d+\.gif$/.test(filename) && !acceptedFiles.has(filename)) {
-            await fs.rm(path.join(outputDir, filename));
-        }
-    }
-
-    console.log(`Đã tải ${manifest.length}/${index} GIF vào ${outputDir}`);
-    if (manifest.length === 0) process.exitCode = 1;
+    console.log(`Xong: +${written} mới, ${skipped} bỏ qua, ${manifest.length} tổng trong sources.json`);
+    console.log('Mặc định không ghi đè / không xóa file cũ. Dùng --force hoặc --prune khi thật sự cần.');
+    if (written === 0 && attempted > 0 && manifest.length === 0) process.exitCode = 1;
 }
 
 main().catch(error => {
