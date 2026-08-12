@@ -15,7 +15,7 @@ if not defined PROJECT_VERSION (
     goto :failed
 )
 
-set "UNITY_EXE=C:\Program Files\Unity\Hub\Editor\%PROJECT_VERSION%\Editor\Unity.exe"
+set "UNITY_EXE=%ProgramFiles%\Unity\Hub\Editor\%PROJECT_VERSION%\Editor\Unity.exe"
 if not exist "%UNITY_EXE%" (
     echo [LOI] Chua cai dung Unity %PROJECT_VERSION%.
     echo Hay cai phien ban nay bang Unity Hub roi chay lai build.bat.
@@ -30,7 +30,7 @@ echo Output: %OUTPUT_EXE%
 echo.
 
 if not exist "%ROOT%Build" mkdir "%ROOT%Build"
-"%UNITY_EXE%" -quit -batchmode -projectPath "%PROJECT_DIR%" -buildWindows64Player "%OUTPUT_EXE%" -logFile "%LOG_FILE%"
+"%UNITY_EXE%" -quit -batchmode -nographics -projectPath "%PROJECT_DIR%" -buildWindows64Player "%OUTPUT_EXE%" -logFile "%LOG_FILE%"
 set "BUILD_RESULT=%ERRORLEVEL%"
 
 if not "%BUILD_RESULT%"=="0" (
