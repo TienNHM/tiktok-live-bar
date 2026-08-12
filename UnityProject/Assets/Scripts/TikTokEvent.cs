@@ -33,6 +33,9 @@ namespace TikTokLiveGame
         public long titleExpiresAt;
         public TikTokPlayerData[] players;
         public TikTokPlayerData[] vipScores;
+        public string[] characterFolders;
+        public string[] bannerVariants;
+        public string fallbackBannerVariant;
     }
 
     [Serializable]
