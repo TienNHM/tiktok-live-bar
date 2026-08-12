@@ -14,19 +14,49 @@ const charactersDir = path.join(
     'Characters'
 );
 const assetsConfigPath = path.join(__dirname, '..', 'config', 'assets.json');
+const rosterConfigPath = path.join(__dirname, '..', 'config', 'roster.json');
 
 const MAX_EDGE = 256;
 const MAX_FRAMES = 48;
 const FORCE = process.argv.includes('--force');
 
+const BAR_DANCE_IDS = [
+    'mina', 'jin', 'yuna', 'kai', 'rina', 'jay',
+    'sora', 'leo', 'momo', 'koko', 'vivi', 'nova'
+];
+const BAR_DANCE_RARITIES = ['common', 'rare', 'epic', 'legendary'];
+const BAR_DANCE_FOLDER_RE = new RegExp(
+    `^(?:bar_dance_)?(${BAR_DANCE_IDS.join('|')})_(${BAR_DANCE_RARITIES.join('|')})$`
+);
+
 /** Mỗi prefix = một character set (pack) trong assets.json */
 const SET_RULES = [
+    {
+        test: name => BAR_DANCE_FOLDER_RE.test(name),
+        id: 'bar-dance',
+        label: 'Bar Dance roster',
+        rosterRef: 'config/roster.json',
+        normalize: name => {
+            const match = name.match(BAR_DANCE_FOLDER_RE);
+            return match ? `${match[1]}_${match[2]}` : name;
+        }
+    },
     { test: /^mushroom_dance_/, id: 'mushroom-dance', label: 'Mushroom dance set' },
     { test: /^mushroom_magic_/, id: 'mushroom-magic', label: 'Mushroom magic set' },
     { test: /^hanhan/, id: 'hanhan', label: 'Hanhan set' },
     { test: /^free_dance_/, id: 'free-dance', label: 'Free dance set' }
 ];
 
+function matchSetRule(folderName) {
+    for (const rule of SET_RULES) {
+        if (typeof rule.test === 'function') {
+            if (rule.test(folderName)) return rule;
+            continue;
+        }
+        if (rule.test.test(folderName)) return rule;
+    }
+    return null;
+}
 function newGuid() {
     return crypto.randomBytes(16).toString('hex');
 }
@@ -201,7 +231,9 @@ async function clearPngs(folderPath) {
 }
 
 async function importGif(gifName) {
-    const folderName = path.basename(gifName, path.extname(gifName));
+    const rawFolderName = path.basename(gifName, path.extname(gifName));
+    const rule = matchSetRule(rawFolderName);
+    const folderName = rule?.normalize ? rule.normalize(rawFolderName) : rawFolderName;
     const gifPath = path.join(gifsDir, gifName);
     const outDir = path.join(charactersDir, folderName);
 
@@ -253,6 +285,41 @@ async function importGif(gifName) {
     return { folderName, skipped: false, frames: written };
 }
 
+async function markRosterImported(importedFolders) {
+    const folders = new Set(importedFolders);
+    if (folders.size === 0) return;
+
+    let roster;
+    try {
+        roster = JSON.parse(await fs.readFile(rosterConfigPath, 'utf8'));
+    } catch (error) {
+        console.warn(`Không cập nhật roster.json: ${error.message}`);
+        return;
+    }
+
+    let changed = 0;
+    for (const character of Array.isArray(roster.characters) ? roster.characters : []) {
+        const variants = character?.variants && typeof character.variants === 'object'
+            ? character.variants
+            : {};
+        for (const rarity of BAR_DANCE_RARITIES) {
+            const variant = variants[rarity];
+            if (!variant) continue;
+            const folder = String(variant.folder || `${character.id}_${rarity}`);
+            if (!folders.has(folder)) continue;
+            if (variant.status !== 'imported') {
+                variant.status = 'imported';
+                changed += 1;
+            }
+            variant.folder = folder;
+        }
+    }
+
+    if (changed === 0) return;
+    await fs.writeFile(rosterConfigPath, `${JSON.stringify(roster, null, 2)}\n`, 'utf8');
+    console.log(`Đã đánh dấu ${changed} variant status=imported trong roster.json`);
+}
+
 async function updateAssetsConfig(importedFolders) {
     const folders = [...new Set(importedFolders)].sort((a, b) =>
         a.localeCompare(b, undefined, { numeric: true })
@@ -271,7 +338,10 @@ async function updateAssetsConfig(importedFolders) {
     let changed = false;
 
     for (const rule of SET_RULES) {
-        const matched = folders.filter(name => rule.test.test(name) && !reservedClassic.has(name));
+        const matched = folders
+            .filter(name => !reservedClassic.has(name))
+            .filter(name => (typeof rule.test === 'function' ? rule.test(name) : rule.test.test(name)))
+            .map(name => (rule.normalize ? rule.normalize(name) : name));
         if (matched.length === 0) continue;
 
         let pack = packs.find(item => item.id === rule.id);
@@ -283,6 +353,7 @@ async function updateAssetsConfig(importedFolders) {
                 enabled: true,
                 folders: []
             };
+            if (rule.rosterRef) pack.rosterRef = rule.rosterRef;
             const bannersIndex = packs.findIndex(item => item.kind === 'banners');
             if (bannersIndex >= 0) packs.splice(bannersIndex, 0, pack);
             else packs.push(pack);
@@ -293,6 +364,7 @@ async function updateAssetsConfig(importedFolders) {
         pack.folders = merged;
         pack.label = rule.label;
         pack.kind = 'characters';
+        if (rule.rosterRef) pack.rosterRef = rule.rosterRef;
         changed = true;
         console.log(`Pack "${rule.id}": ${merged.length} characters`);
     }
@@ -335,7 +407,8 @@ async function main() {
     }
 
     await updateAssetsConfig(imported);
-    console.log(`Xong. Mở Unity để import meta, rồi Assets → bật pack "Imported GIFs" → Lưu & áp dụng.`);
+    await markRosterImported(imported);
+    console.log(`Xong. Mở Unity để import meta, rồi Assets → bật pack Bar Dance → Lưu & áp dụng.`);
 }
 
 main().catch(error => {
