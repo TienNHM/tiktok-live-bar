@@ -1,0 +1,729 @@
+{
+  "id": "bar-dance",
+  "label": "Bar Dance roster",
+  "version": 2,
+  "rarities": [
+    "common",
+    "rare",
+    "epic",
+    "legendary"
+  ],
+  "rarityThresholds": [
+    {
+      "rarity": "common",
+      "minimum": 0
+    },
+    {
+      "rarity": "rare",
+      "minimum": 10
+    },
+    {
+      "rarity": "epic",
+      "minimum": 200
+    },
+    {
+      "rarity": "legendary",
+      "minimum": 1000
+    }
+  ],
+  "characters": [
+    {
+      "id": "mina",
+      "displayName": "Mina",
+      "line": "kpop",
+      "vibe": "K-pop girl",
+      "baseOutfit": "Pink crop + cargo",
+      "variants": {
+        "common": {
+          "folder": "mina_common",
+          "outfit": "Pink crop top + cargo pants",
+          "hair": "Straight black bob",
+          "shoes": "White sneakers",
+          "accessory": "Simple choker",
+          "dance": "mina_basic",
+          "entranceVfx": "sparkle_soft",
+          "victoryVfx": "heart_burst",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "mina_rare",
+          "outfit": "Pink stage crop + metallic cargo",
+          "hair": "Black bob with pink tips",
+          "shoes": "Pink platform sneakers",
+          "accessory": "Heart ear cuff",
+          "dance": "mina_wave",
+          "entranceVfx": "pink_confetti",
+          "victoryVfx": "heart_rain",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "mina_epic",
+          "outfit": "Idol pink set with cargo accents",
+          "hair": "High ponytail pink streak",
+          "shoes": "Glitter boots",
+          "accessory": "Crystal mic clip",
+          "dance": "mina_idol",
+          "entranceVfx": "spotlight_pink",
+          "victoryVfx": "stage_flare",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "mina_legendary",
+          "outfit": "Ultimate pink idol armor-crop",
+          "hair": "Long flowing pink-black",
+          "shoes": "Holographic heels",
+          "accessory": "Floating heart halo",
+          "dance": "mina_finale",
+          "entranceVfx": "idol_portal",
+          "victoryVfx": "heart_nova",
+          "status": "planned"
+        }
+      },
+      "phase": 1,
+      "mvp": true,
+      "identity": "Pink K-pop idol — playful, energetic, confident",
+      "artDir": "game-assets/characters/mina"
+    },
+    {
+      "id": "yuna",
+      "displayName": "Yuna",
+      "line": "y2k",
+      "vibe": "Y2K",
+      "baseOutfit": "Mini skirt + boots",
+      "variants": {
+        "common": {
+          "folder": "yuna_common",
+          "outfit": "Mini skirt + crop + boots",
+          "hair": "Space buns",
+          "shoes": "Knee boots",
+          "accessory": "Butterfly clips",
+          "dance": "yuna_basic",
+          "entranceVfx": "glitter_dust",
+          "victoryVfx": "butterfly_burst",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "yuna_rare",
+          "outfit": "Metallic mini + mesh top",
+          "hair": "Y2K bangs + buns",
+          "shoes": "Platform boots",
+          "accessory": "Star sunglasses",
+          "dance": "yuna_pop",
+          "entranceVfx": "chrome_spark",
+          "victoryVfx": "star_rain",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "yuna_epic",
+          "outfit": "Holo mini set",
+          "hair": "Long wavy with butterfly pins",
+          "shoes": "Chrome platform boots",
+          "accessory": "Phone charm cluster",
+          "dance": "yuna_y2k",
+          "entranceVfx": "retro_flash",
+          "victoryVfx": "disco_burst",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "yuna_legendary",
+          "outfit": "Ultimate Y2K idol mini",
+          "hair": "Iridescent long waves",
+          "shoes": "Crystal platform boots",
+          "accessory": "Floating butterfly swarm",
+          "dance": "yuna_finale",
+          "entranceVfx": "y2k_portal",
+          "victoryVfx": "chrome_nova",
+          "status": "planned"
+        }
+      },
+      "phase": 1,
+      "mvp": true,
+      "identity": "Y2K fashion girl — rebellious, fashionable",
+      "artDir": "game-assets/characters/yuna"
+    },
+    {
+      "id": "jin",
+      "displayName": "Jin",
+      "line": "kpop",
+      "vibe": "Cool boy",
+      "baseOutfit": "Oversized jacket",
+      "variants": {
+        "common": {
+          "folder": "jin_common",
+          "outfit": "Oversized denim jacket + tee",
+          "hair": "Messy black crop",
+          "shoes": "Chunky white sneakers",
+          "accessory": "Silver chain",
+          "dance": "jin_basic",
+          "entranceVfx": "cool_smoke",
+          "victoryVfx": "flash_cut",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "jin_rare",
+          "outfit": "Oversized black jacket + graphic tee",
+          "hair": "Slick side part",
+          "shoes": "Black high-tops",
+          "accessory": "Ear piercing set",
+          "dance": "jin_groove",
+          "entranceVfx": "street_haze",
+          "victoryVfx": "bass_pulse",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "jin_epic",
+          "outfit": "Leather oversized jacket + layered chains",
+          "hair": "Two-tone cool cut",
+          "shoes": "Designer sneakers",
+          "accessory": "Shades on head",
+          "dance": "jin_cool",
+          "entranceVfx": "neon_streak",
+          "victoryVfx": "cool_shatter",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "jin_legendary",
+          "outfit": "Chrome oversized jacket idol fit",
+          "hair": "Icy silver crop",
+          "shoes": "Chrome boots",
+          "accessory": "Holo chain cape",
+          "dance": "jin_finale",
+          "entranceVfx": "cool_portal",
+          "victoryVfx": "ice_flash",
+          "status": "planned"
+        }
+      },
+      "phase": 1,
+      "mvp": true,
+      "identity": "Cool street / K-pop boy — composed, stylish",
+      "artDir": "game-assets/characters/jin"
+    },
+    {
+      "id": "kai",
+      "displayName": "Kai",
+      "line": "y2k",
+      "vibe": "Hip-hop",
+      "baseOutfit": "Hoodie + baggy pants",
+      "variants": {
+        "common": {
+          "folder": "kai_common",
+          "outfit": "Hoodie + baggy pants",
+          "hair": "Underfade",
+          "shoes": "Chunky sneakers",
+          "accessory": "Cap backward",
+          "dance": "kai_basic",
+          "entranceVfx": "beat_drop",
+          "victoryVfx": "bass_boom",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "kai_rare",
+          "outfit": "Graphic hoodie + cargo baggy",
+          "hair": "Dreads/braid fade",
+          "shoes": "High-top kicks",
+          "accessory": "Gold chain + cap",
+          "dance": "kai_hiphop",
+          "entranceVfx": "vinyl_spin",
+          "victoryVfx": "scratch_flash",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "kai_epic",
+          "outfit": "Street hoodie with neon trim",
+          "hair": "Sharp undercut",
+          "shoes": "Neon kicks",
+          "accessory": "Headphones neck",
+          "dance": "kai_break",
+          "entranceVfx": "graffiti_burst",
+          "victoryVfx": "speaker_blast",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "kai_legendary",
+          "outfit": "Legendary street armor hoodie",
+          "hair": "Electric blue fade",
+          "shoes": "Hover sneakers",
+          "accessory": "Holo boombox aura",
+          "dance": "kai_finale",
+          "entranceVfx": "hiphop_portal",
+          "victoryVfx": "city_drop",
+          "status": "planned"
+        }
+      },
+      "phase": 1,
+      "mvp": true,
+      "identity": "Hip-hop boy — rhythmic, street swagger",
+      "artDir": "game-assets/characters/kai"
+    },
+    {
+      "id": "vivi",
+      "displayName": "Vivi",
+      "line": "cyber",
+      "vibe": "Cyber K-pop",
+      "baseOutfit": "Neon",
+      "variants": {
+        "common": {
+          "folder": "vivi_common",
+          "outfit": "Neon crop + tech pants",
+          "hair": "Neon underlights",
+          "shoes": "LED sneakers",
+          "accessory": "Visor",
+          "dance": "vivi_basic",
+          "entranceVfx": "glitch_in",
+          "victoryVfx": "pixel_burst",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "vivi_rare",
+          "outfit": "Cyber harness idol set",
+          "hair": "Wired neon braid",
+          "shoes": "Tech boots",
+          "accessory": "HUD glasses",
+          "dance": "vivi_cyber",
+          "entranceVfx": "scanline",
+          "victoryVfx": "data_rain",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "vivi_epic",
+          "outfit": "Full neon cyber idol",
+          "hair": "Holo cyber cut",
+          "shoes": "Hover LED boots",
+          "accessory": "Drone companion",
+          "dance": "vivi_matrix",
+          "entranceVfx": "holo_gate",
+          "victoryVfx": "circuit_flare",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "vivi_legendary",
+          "outfit": "Legendary neon core idol",
+          "hair": "Living neon filaments",
+          "shoes": "Photon boots",
+          "accessory": "Orbit HUD rings",
+          "dance": "vivi_finale",
+          "entranceVfx": "cyber_portal",
+          "victoryVfx": "neon_nova",
+          "status": "planned"
+        }
+      },
+      "phase": 1,
+      "mvp": true,
+      "identity": "Cyber K-pop idol — futuristic, mysterious",
+      "artDir": "game-assets/characters/vivi"
+    },
+    {
+      "id": "koko",
+      "displayName": "Koko",
+      "line": "mascot",
+      "vibe": "Mascot",
+      "baseOutfit": "Cat",
+      "variants": {
+        "common": {
+          "folder": "koko_common",
+          "outfit": "Cat mascot suit",
+          "hair": "Cat ears hood",
+          "shoes": "Paw boots",
+          "accessory": "Fish toy",
+          "dance": "koko_basic",
+          "entranceVfx": "purr_puff",
+          "victoryVfx": "yarn_burst",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "koko_rare",
+          "outfit": "Idol cat suit",
+          "hair": "Fluffy cat ears",
+          "shoes": "Bell paw boots",
+          "accessory": "Bell collar",
+          "dance": "koko_paw",
+          "entranceVfx": "cat_confetti",
+          "victoryVfx": "meow_spark",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "koko_epic",
+          "outfit": "Stage cat with sequin fur",
+          "hair": "Sparkle cat ears",
+          "shoes": "Disco paw boots",
+          "accessory": "Laser pointer prop",
+          "dance": "koko_party",
+          "entranceVfx": "mascot_spotlight",
+          "victoryVfx": "cat_cheer",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "koko_legendary",
+          "outfit": "Legendary neon cat",
+          "hair": "Neon cat ears",
+          "shoes": "Holo paw boots",
+          "accessory": "Floating yarn moons",
+          "dance": "koko_finale",
+          "entranceVfx": "cat_portal",
+          "victoryVfx": "meow_nova",
+          "status": "planned"
+        }
+      },
+      "phase": 1,
+      "mvp": true,
+      "identity": "Cat mascot — playful, cheeky",
+      "artDir": "game-assets/characters/koko"
+    },
+    {
+      "id": "rina",
+      "displayName": "Rina",
+      "line": "kpop",
+      "vibe": "Idol",
+      "baseOutfit": "Sparkle stage outfit",
+      "variants": {
+        "common": {
+          "folder": "rina_common",
+          "outfit": "Sparkle stage crop + skirt",
+          "hair": "Long idol waves",
+          "shoes": "Stage heels",
+          "accessory": "Mic",
+          "dance": "rina_basic",
+          "entranceVfx": "stage_light",
+          "victoryVfx": "sparkle_burst",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "rina_rare",
+          "outfit": "Sequined idol dress",
+          "hair": "Half-up sparkle clips",
+          "shoes": "Crystal heels",
+          "accessory": "Ribbon mic",
+          "dance": "rina_idol",
+          "entranceVfx": "curtain_rise",
+          "victoryVfx": "fanlight_wave",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "rina_epic",
+          "outfit": "Glitter stage armor dress",
+          "hair": "Voluminous idol curls",
+          "shoes": "Diamond heels",
+          "accessory": "Wing clips",
+          "dance": "rina_stage",
+          "entranceVfx": "idol_spotlight",
+          "victoryVfx": "confetti_canon",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "rina_legendary",
+          "outfit": "Ultimate sparkle goddess fit",
+          "hair": "Galaxy idol waves",
+          "shoes": "Levitating crystal heels",
+          "accessory": "Crown mic halo",
+          "dance": "rina_finale",
+          "entranceVfx": "diva_portal",
+          "victoryVfx": "star_nova",
+          "status": "planned"
+        }
+      },
+      "phase": 2,
+      "mvp": false,
+      "identity": "Elegant sparkle idol — glamorous, stage-ready",
+      "artDir": "game-assets/characters/rina"
+    },
+    {
+      "id": "sora",
+      "displayName": "Sora",
+      "line": "kpop",
+      "vibe": "Cute",
+      "baseOutfit": "Pastel outfit",
+      "variants": {
+        "common": {
+          "folder": "sora_common",
+          "outfit": "Pastel cardigan + skirt",
+          "hair": "Soft twin tails",
+          "shoes": "Mary janes",
+          "accessory": "Hair ribbons",
+          "dance": "sora_basic",
+          "entranceVfx": "pastel_bubbles",
+          "victoryVfx": "candy_burst",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "sora_rare",
+          "outfit": "Pastel frill set",
+          "hair": "Pigtails with beads",
+          "shoes": "Pastel sneakers",
+          "accessory": "Plush keychain",
+          "dance": "sora_cute",
+          "entranceVfx": "cloud_puff",
+          "victoryVfx": "heart_candy",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "sora_epic",
+          "outfit": "Dreamy pastel idol dress",
+          "hair": "Long soft curls",
+          "shoes": "Ribbon heels",
+          "accessory": "Star wand",
+          "dance": "sora_dream",
+          "entranceVfx": "cotton_portal",
+          "victoryVfx": "rainbow_soft",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "sora_legendary",
+          "outfit": "Ultimate pastel fairy idol",
+          "hair": "Aurora twin tails",
+          "shoes": "Cloud heels",
+          "accessory": "Floating pastel moons",
+          "dance": "sora_finale",
+          "entranceVfx": "dream_portal",
+          "victoryVfx": "pastel_nova",
+          "status": "planned"
+        }
+      },
+      "phase": 2,
+      "mvp": false,
+      "identity": "Cute pastel idol — soft, bubbly",
+      "artDir": "game-assets/characters/sora"
+    },
+    {
+      "id": "jay",
+      "displayName": "Jay",
+      "line": "y2k",
+      "vibe": "Street",
+      "baseOutfit": "Varsity jacket",
+      "variants": {
+        "common": {
+          "folder": "jay_common",
+          "outfit": "Varsity jacket + jeans",
+          "hair": "Short textured",
+          "shoes": "Retro sneakers",
+          "accessory": "Letterman patch",
+          "dance": "jay_basic",
+          "entranceVfx": "street_dust",
+          "victoryVfx": "tag_flash",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "jay_rare",
+          "outfit": "Vintage varsity + cargo",
+          "hair": "Curtain bangs",
+          "shoes": "Skate shoes",
+          "accessory": "Crossbody bag",
+          "dance": "jay_street",
+          "entranceVfx": "spray_mist",
+          "victoryVfx": "neon_tag",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "jay_epic",
+          "outfit": "Neon varsity set",
+          "hair": "Styled mullet",
+          "shoes": "Glow sneakers",
+          "accessory": "Skateboard prop",
+          "dance": "jay_crew",
+          "entranceVfx": "alley_neon",
+          "victoryVfx": "crew_cheer",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "jay_legendary",
+          "outfit": "Legendary varsity of the block",
+          "hair": "Flame-streak hair",
+          "shoes": "Jet sneakers",
+          "accessory": "Floating varsity letters",
+          "dance": "jay_finale",
+          "entranceVfx": "street_portal",
+          "victoryVfx": "city_lights",
+          "status": "planned"
+        }
+      },
+      "phase": 2,
+      "mvp": false,
+      "identity": "Varsity street boy — athletic, crew vibe",
+      "artDir": "game-assets/characters/jay"
+    },
+    {
+      "id": "leo",
+      "displayName": "Leo",
+      "line": "y2k",
+      "vibe": "Bad boy",
+      "baseOutfit": "Black/red streetwear",
+      "variants": {
+        "common": {
+          "folder": "leo_common",
+          "outfit": "Black tee + red accent pants",
+          "hair": "Dark swept back",
+          "shoes": "Black boots",
+          "accessory": "Red bandana",
+          "dance": "leo_basic",
+          "entranceVfx": "ember_smoke",
+          "victoryVfx": "red_flash",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "leo_rare",
+          "outfit": "Black/red street jacket",
+          "hair": "Undercut with red tip",
+          "shoes": "Red-laced boots",
+          "accessory": "Spiked bracelet",
+          "dance": "leo_bad",
+          "entranceVfx": "ash_burst",
+          "victoryVfx": "flame_slash",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "leo_epic",
+          "outfit": "Leather black/red battle street",
+          "hair": "Wild dark with red streak",
+          "shoes": "Combat boots",
+          "accessory": "Chain harness",
+          "dance": "leo_fierce",
+          "entranceVfx": "fire_ring",
+          "victoryVfx": "inferno_cut",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "leo_legendary",
+          "outfit": "Legendary black/red demon streetwear",
+          "hair": "Flame-black mane",
+          "shoes": "Ember boots",
+          "accessory": "Floating red crown thorns",
+          "dance": "leo_finale",
+          "entranceVfx": "badboy_portal",
+          "victoryVfx": "crimson_nova",
+          "status": "planned"
+        }
+      },
+      "phase": 2,
+      "mvp": false,
+      "identity": "Dark street bad boy — intense, edgy",
+      "artDir": "game-assets/characters/leo"
+    },
+    {
+      "id": "momo",
+      "displayName": "Momo",
+      "line": "mascot",
+      "vibe": "Mascot",
+      "baseOutfit": "Bunny",
+      "variants": {
+        "common": {
+          "folder": "momo_common",
+          "outfit": "Bunny mascot suit",
+          "hair": "Bunny ears hood",
+          "shoes": "Paw slippers",
+          "accessory": "Carrot",
+          "dance": "momo_basic",
+          "entranceVfx": "hop_dust",
+          "victoryVfx": "carrot_pop",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "momo_rare",
+          "outfit": "Idol bunny suit pastel",
+          "hair": "Fluffy bunny ears",
+          "shoes": "Ribbon paw boots",
+          "accessory": "Star carrot",
+          "dance": "momo_hop",
+          "entranceVfx": "bunny_confetti",
+          "victoryVfx": "ear_wiggle_burst",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "momo_epic",
+          "outfit": "Stage bunny with sparkle fur",
+          "hair": "Glitter bunny ears",
+          "shoes": "Disco paw boots",
+          "accessory": "Magic carrot mic",
+          "dance": "momo_party",
+          "entranceVfx": "mascot_spotlight",
+          "victoryVfx": "bunny_cheer",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "momo_legendary",
+          "outfit": "Legendary cosmic bunny",
+          "hair": "Galaxy bunny ears",
+          "shoes": "Star paw boots",
+          "accessory": "Orbit carrots",
+          "dance": "momo_finale",
+          "entranceVfx": "bunny_portal",
+          "victoryVfx": "carrot_nova",
+          "status": "planned"
+        }
+      },
+      "phase": 2,
+      "mvp": false,
+      "identity": "Bunny mascot — hoppy, cheerful",
+      "artDir": "game-assets/characters/momo"
+    },
+    {
+      "id": "nova",
+      "displayName": "Nova",
+      "line": "legendary",
+      "vibe": "Legendary",
+      "baseOutfit": "Futuristic idol",
+      "variants": {
+        "common": {
+          "folder": "nova_common",
+          "outfit": "Futuristic idol base suit",
+          "hair": "Silver idol cut",
+          "shoes": "Chrome boots",
+          "accessory": "Star pin",
+          "dance": "nova_basic",
+          "entranceVfx": "star_arrive",
+          "victoryVfx": "orbit_spark",
+          "status": "planned"
+        },
+        "rare": {
+          "folder": "nova_rare",
+          "outfit": "Futuristic idol with capelet",
+          "hair": "Silver-blue flow",
+          "shoes": "Star boots",
+          "accessory": "Orbit earrings",
+          "dance": "nova_orbit",
+          "entranceVfx": "comet_trail",
+          "victoryVfx": "star_ring",
+          "status": "planned"
+        },
+        "epic": {
+          "folder": "nova_epic",
+          "outfit": "Cosmic idol armor",
+          "hair": "Galaxy silver waves",
+          "shoes": "Gravity boots",
+          "accessory": "Planet sash",
+          "dance": "nova_cosmic",
+          "entranceVfx": "supernova_in",
+          "victoryVfx": "galaxy_burst",
+          "status": "planned"
+        },
+        "legendary": {
+          "folder": "nova_legendary",
+          "outfit": "Ultimate futuristic idol of Bar Dance",
+          "hair": "Living starlight hair",
+          "shoes": "Constellation heels",
+          "accessory": "Crown of stars",
+          "dance": "nova_finale",
+          "entranceVfx": "legend_portal",
+          "victoryVfx": "universe_nova",
+          "status": "planned"
+        }
+      },
+      "phase": 2,
+      "mvp": false,
+      "identity": "Legendary futuristic idol — iconic, cosmic",
+      "artDir": "game-assets/characters/nova"
+    }
+  ],
+  "pipeline": {
+    "artDirection": "K-pop × Y2K × Gen-Z × Streetwear × Cute × Neon",
+    "mvpIds": [
+      "mina",
+      "yuna",
+      "jin",
+      "kai",
+      "vivi",
+      "koko"
+    ],
+    "preferSpine": true,
+    "bible": "assets/roster/CHARACTER_BIBLE.md",
+    "assetRoot": "game-assets/characters"
+  }
+}

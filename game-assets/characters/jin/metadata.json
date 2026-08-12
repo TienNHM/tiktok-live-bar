@@ -1,0 +1,31 @@
+{
+  "id": "jin",
+  "displayName": "Jin",
+  "phase": 1,
+  "mvp": true,
+  "line": "kpop",
+  "identity": "Cool street / K-pop boy — composed, stylish",
+  "vibe": "Cool boy",
+  "baseOutfit": "Oversized jacket",
+  "pipeline": {
+    "masterSheet": false,
+    "reference": false,
+    "masterNeutral": false,
+    "poses": {
+      "idle": false,
+      "happy": false,
+      "dance": false,
+      "victory": false
+    },
+    "layers": false,
+    "spine": false
+  },
+  "generation": {
+    "tool": "",
+    "model": "",
+    "seed": null,
+    "version": 1,
+    "date": null,
+    "notes": "Fill after each successful gen. Keep seeds to regenerate outfits later."
+  }
+}

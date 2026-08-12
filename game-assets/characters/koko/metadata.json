@@ -1,0 +1,31 @@
+{
+  "id": "koko",
+  "displayName": "Koko",
+  "phase": 1,
+  "mvp": true,
+  "line": "mascot",
+  "identity": "Cat mascot — playful, cheeky",
+  "vibe": "Mascot",
+  "baseOutfit": "Cat",
+  "pipeline": {
+    "masterSheet": false,
+    "reference": false,
+    "masterNeutral": false,
+    "poses": {
+      "idle": false,
+      "happy": false,
+      "dance": false,
+      "victory": false
+    },
+    "layers": false,
+    "spine": false
+  },
+  "generation": {
+    "tool": "",
+    "model": "",
+    "seed": null,
+    "version": 1,
+    "date": null,
+    "notes": "Fill after each successful gen. Keep seeds to regenerate outfits later."
+  }
+}
