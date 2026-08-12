@@ -25,7 +25,7 @@
 | Phần mềm | Phiên bản |
 |-----------|-----------|
 | **Node.js** | ≥ 20.x |
-| **Unity** | 6000.x (Unity 6) |
+| **Unity** | Chỉ cần khi tự build source; dùng đúng 6000.2.10f1 |
 | **TikFinity Desktop** | Phiên bản mới nhất |
 | **OBS Studio** | Khuyến nghị cho streaming |
 | **Windows** | 10 / 11 (64-bit) |
@@ -36,24 +36,44 @@
 
 ### Cách nhanh nhất trên Windows
 
-Nhấp đúp `run.bat`. Launcher sẽ kiểm tra Node.js, tự cài thư viện khi cần,
-khởi động TikTok Bridge, mở game và Control Panel.
+1. Tải [`OngChuMMO-Live-Windows-v1.0.5.zip`](https://github.com/cherry9001/tiktok-live-bar/releases/latest/download/OngChuMMO-Live-Windows-v1.0.5.zip) trong mục **Releases**.
+2. Giải nén toàn bộ ZIP ra một thư mục mới. Không chạy trực tiếp bên trong ZIP.
+3. Cài [Node.js 20 LTS trở lên](https://nodejs.org/) nếu máy chưa có.
+4. Nhấp đúp `run.bat`. Launcher tự cài thư viện, mở Bridge, Game và Control Panel.
+
+### Dấu hiệu cài đặt thành công
+
+Sau khi chạy `run.bat` lần đầu:
+
+- Cửa sổ **TikTok Bridge** hiển thị địa chỉ `http://127.0.0.1:3000`.
+- Trình duyệt mở Control Panel và logo TikTok Live Bar hiển thị bình thường.
+- Game mở với cửa sổ `TikTokLiveGameUnity` và báo kết nối Node thành công.
+- Gói Windows đã kèm `Build/DJ_MUSIC/nhacnen.MP3`; có thể thay bằng MP3/WAV/OGG của bạn.
+
+Luồng trên đã được kiểm thử trọn vẹn từ ZIP sạch trên Windows 11: launcher tự
+chạy `npm ci`, Bridge/Control Panel/WebSocket hoạt động và game kết nối cổng 3000.
 
 > `run.bat` không tự tắt chương trình khác đang dùng cổng 3000. Nếu launcher báo
 > xung đột cổng, hãy đóng đúng chương trình được báo rồi chạy lại để tránh mất dữ liệu.
 
-### Bước 1 — Clone repo
+> **Không tải “Source code (zip)” nếu bạn chỉ muốn chơi.** File source tự động của
+> GitHub không chứa thư mục `Build`; hãy tải đúng file Windows ở mục Releases.
+
+### Dành cho lập trình viên — Clone source
 
 ```bash
 git clone https://github.com/TienNHM/tiktok-live-bar.git
 cd tiktok-live-bar
 ```
 
+Source GitHub không chứa game đã biên dịch. Cài Unity `6000.2.10f1`, sau đó chạy
+`build.bat` hoặc mở `UnityProject/` bằng Unity Hub để tạo thư mục `Build`.
+
 ### Chạy thủ công — Cài đặt Node Bridge
 
 ```bash
 cd TikTokBridge
-copy .env.example .env  # Tùy chỉnh nếu cần (Windows)
+copy .env.example .env
 npm ci
 npm start
 ```
@@ -65,7 +85,7 @@ Truy cập [http://127.0.0.1:3000/control.html](http://127.0.0.1:3000/control.ht
 ### Chạy Unity Game
 
 - **Nếu có file build:** Chạy `run.bat`
-- **Nếu muốn build từ source:** Mở `UnityProject/` trong Unity Hub → Build
+- **Nếu clone source:** Cài Unity `6000.2.10f1`, rồi chạy `build.bat`
 
 ### Kết nối TikTok LIVE
 
@@ -92,7 +112,7 @@ Truy cập [http://127.0.0.1:3000/control.html](http://127.0.0.1:3000/control.ht
 ├── DJ_MUSIC/              # Thả file nhạc MP3/WAV/OGG vào đây
 ├── DJ_VIDEO/              # Thả file video MP4/PNG vào đây
 ├── LiveAssets/            # Hình nền, GIF hiệu ứng
-├── Build/                 # (Không có trong repo) File build compiled
+├── Build/                 # Có trong gói Release; không có trong source Git
 │
 ├── build.bat              # Script build Unity → EXE
 ├── run.bat                # Script chạy Node + Game
@@ -165,6 +185,19 @@ LIVE_PROVIDER=tikfinity
 TIKFINITY_WS_URL=ws://127.0.0.1:21213/
 ALLOW_LAN=0
 ```
+
+Bridge thực sự nạp file `.env` khi khởi động. Biến môi trường của Windows được ưu
+tiên nếu cùng tên. Bản game dựng sẵn kết nối cố định tới cổng `3000`; chỉ đổi
+`PORT` khi bạn dùng riêng Control Panel/Bridge hoặc đã tự build lại Unity client.
+
+### Xử lý lỗi cài đặt thường gặp
+
+- **`node` hoặc `npm` không được nhận diện:** cài Node.js 20+, đóng cửa sổ cũ rồi chạy lại `run.bat`.
+- **`npm ci` thất bại:** kiểm tra kết nối Internet, tắt proxy/VPN lỗi và chạy lại; không sao chép `node_modules` từ máy khác.
+- **Cổng 3000 đang bị chiếm:** đóng đúng ứng dụng/PID được launcher báo; launcher không tự tắt ứng dụng khác.
+- **Không tìm thấy game:** bạn đã tải Source ZIP hoặc clone Git. Hãy tải bản Windows trong Releases hoặc tự build bằng Unity.
+- **Windows SmartScreen cảnh báo:** chọn **More info → Run anyway** nếu file được tải từ Release chính thức của repo này.
+- **TikTok chưa có sự kiện:** mở TikFinity, kiểm tra WebSocket `ws://127.0.0.1:21213/`, sau đó thử **Test Lab** trước.
 
 ---
 
