@@ -985,6 +985,84 @@ kbd {
     color: var(--gold);
 }
 
+.roster-checklist {
+    display: grid;
+    gap: 8px;
+    max-height: 360px;
+    overflow: auto;
+    padding-right: 4px;
+}
+.roster-row {
+    padding: 10px 12px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.roster-row-head {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+.roster-id,
+.roster-line {
+    font-size: 11px;
+    color: var(--text-2);
+    font-weight: 500;
+}
+.roster-line {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.roster-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.roster-pill {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    background: var(--bg-2);
+}
+.roster-pill.status-planned { opacity: 0.75; }
+.roster-pill.status-art_ready {
+    color: #c9a227;
+    border-color: rgba(201, 162, 39, 0.45);
+}
+.roster-pill.status-imported {
+    color: #3d9a6a;
+    border-color: rgba(61, 154, 106, 0.45);
+    background: rgba(61, 154, 106, 0.12);
+}
+.roster-mvp {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #3d9a6a;
+    border: 1px solid rgba(61, 154, 106, 0.45);
+    background: rgba(61, 154, 106, 0.12);
+    border-radius: 999px;
+    padding: 1px 6px;
+    margin-left: 4px;
+}
+.roster-phase {
+    font-size: 10px;
+    color: var(--text-2);
+    margin-left: 4px;
+}
+.roster-identity {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    line-height: 1.4;
+}
+.roster-row.is-mvp {
+    border-color: rgba(61, 154, 106, 0.35);
+}
+
 @media (max-width: 900px) {
     .nav-toggle { display: inline-flex; }
     .tab-nav {

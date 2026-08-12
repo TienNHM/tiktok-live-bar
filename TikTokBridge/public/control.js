@@ -56,6 +56,8 @@ const ui = {
     toastHost: document.getElementById('toast-host'),
     characterPacks: document.getElementById('character-packs'),
     bannerPacks: document.getElementById('banner-packs'),
+    rosterChecklist: document.getElementById('roster-checklist'),
+    rosterSummary: document.getElementById('roster-summary'),
     assetSources: document.getElementById('asset-sources'),
     assetsSummary: document.getElementById('assets-summary'),
     assetsMessage: document.getElementById('assets-message'),
@@ -80,8 +82,10 @@ let socket;
 let reconnectTimer;
 let masterConfig = { joinMode: 'keyword_only', giftAlwaysJoins: true, rules: [] };
 let assetsConfig = { packs: [], sources: [] };
+let rosterRuntime = { entries: [], meta: null, rarityThresholds: [] };
 const recentGifts = new Map();
 let activeUsername = '';
+const ROSTER_RARITIES = ['common', 'rare', 'epic', 'legendary'];
 
 function toast(message, type = 'ok') {
     if (!ui.toastHost || !message) return;
@@ -203,7 +207,89 @@ function updateAssetsSummary() {
         }
         if (pack.kind === 'banners') banners = (pack.variants || []).length;
     }
-    ui.assetsSummary.textContent = `${folders.size} nhân vật · ${banners} banner`;
+    const imported = (rosterRuntime.entries || []).filter(entry => entry.status === 'imported').length;
+    const planned = (rosterRuntime.entries || []).length;
+    const rosterBit = planned > 0 ? ` · roster ${imported}/${planned}` : '';
+    ui.assetsSummary.textContent = `${folders.size} nhân vật · ${banners} banner${rosterBit}`;
+}
+
+function renderRosterChecklist() {
+    if (!ui.rosterChecklist) return;
+    ui.rosterChecklist.replaceChildren();
+    const meta = rosterRuntime.meta;
+    const entries = Array.isArray(rosterRuntime.entries) ? rosterRuntime.entries : [];
+    if (!meta || entries.length === 0) {
+        if (ui.rosterSummary) ui.rosterSummary.textContent = 'Bật pack Bar Dance để theo dõi 12×4 variant.';
+        const empty = document.createElement('span');
+        empty.className = 'empty-state';
+        empty.textContent = 'Chưa có roster metadata.';
+        ui.rosterChecklist.append(empty);
+        return;
+    }
+
+    const byId = new Map();
+    for (const entry of entries) {
+        if (!byId.has(entry.id)) {
+            byId.set(entry.id, {
+                id: entry.id,
+                displayName: entry.displayName || entry.id,
+                line: entry.line || '',
+                vibe: entry.vibe || '',
+                identity: entry.identity || '',
+                phase: entry.phase || 1,
+                mvp: entry.mvp === true,
+                variants: {}
+            });
+        }
+        byId.get(entry.id).variants[entry.rarity] = entry;
+    }
+
+    let imported = 0;
+    let artReady = 0;
+    let planned = 0;
+    for (const entry of entries) {
+        if (entry.status === 'imported') imported += 1;
+        else if (entry.status === 'art_ready') artReady += 1;
+        else planned += 1;
+    }
+    const mvpCount = [...byId.values()].filter(c => c.mvp).length;
+    if (ui.rosterSummary) {
+        ui.rosterSummary.textContent = `${meta.label || 'Bar Dance'} · MVP ${mvpCount} · ${byId.size} NV · imported ${imported} · art_ready ${artReady} · planned ${planned}`;
+    }
+
+    const ordered = [...byId.values()].sort((a, b) => {
+        if (a.mvp !== b.mvp) return a.mvp ? -1 : 1;
+        return String(a.id).localeCompare(String(b.id));
+    });
+
+    for (const character of ordered) {
+        const row = document.createElement('div');
+        row.className = 'roster-row' + (character.mvp ? ' is-mvp' : '');
+        const head = document.createElement('div');
+        head.className = 'roster-row-head';
+        const mvpBadge = character.mvp ? ' <span class="roster-mvp">MVP</span>' : ` <span class="roster-phase">P${character.phase || 2}</span>`;
+        head.innerHTML = `<strong>${character.displayName}</strong> <span class="roster-id">${character.id}</span>`
+            + (character.line ? ` <span class="roster-line">${character.line}</span>` : '')
+            + mvpBadge;
+        if (character.identity) {
+            const idLine = document.createElement('div');
+            idLine.className = 'roster-identity';
+            idLine.textContent = character.identity;
+            head.append(idLine);
+        }
+        const pills = document.createElement('div');
+        pills.className = 'roster-pills';
+        for (const rarity of ROSTER_RARITIES) {
+            const variant = character.variants[rarity] || { status: 'planned', folder: `${character.id}_${rarity}` };
+            const pill = document.createElement('span');
+            pill.className = `roster-pill status-${variant.status || 'planned'}`;
+            pill.title = `${variant.folder || ''} · ${variant.status || 'planned'}`;
+            pill.textContent = `${rarity}: ${variant.status || 'planned'}`;
+            pills.append(pill);
+        }
+        row.append(head, pills);
+        ui.rosterChecklist.append(row);
+    }
 }
 
 function renderPackList(container, packs, kind) {
@@ -235,7 +321,8 @@ function renderPackList(container, packs, kind) {
         const meta = document.createElement('div');
         meta.className = 'pack-item-meta';
         if (kind === 'characters') {
-            meta.textContent = `Folders: ${(pack.folders || []).join(', ') || '—'}`;
+            const rosterNote = pack.rosterRef ? ` · roster ${pack.rosterRef}` : '';
+            meta.textContent = `Folders: ${(pack.folders || []).length}${rosterNote}`;
         } else {
             meta.textContent = `Variants: ${(pack.variants || []).join(', ') || '—'} · fallback ${pack.fallbackVariant || 'ice'}`;
         }
@@ -280,13 +367,21 @@ function renderSources() {
     }
 }
 
-function renderAssets(config) {
+function renderAssets(config, runtime = null) {
     assetsConfig = {
         packs: Array.isArray(config?.packs) ? config.packs.map(pack => ({ ...pack })) : [],
         sources: Array.isArray(config?.sources) ? config.sources.map(source => ({ ...source })) : []
     };
+    if (runtime) {
+        rosterRuntime = {
+            entries: Array.isArray(runtime.roster) ? runtime.roster : [],
+            meta: runtime.rosterMeta || null,
+            rarityThresholds: Array.isArray(runtime.rarityThresholds) ? runtime.rarityThresholds : []
+        };
+    }
     renderPackList(ui.characterPacks, assetsConfig.packs, 'characters');
     renderPackList(ui.bannerPacks, assetsConfig.packs, 'banners');
+    renderRosterChecklist();
     renderSources();
     updateAssetsSummary();
 }
@@ -441,9 +536,9 @@ function connectSocket() {
             setMasterMessage(data.message || 'Đã lưu Master.');
             toast(data.message || 'Đã lưu Master Rules');
         }
-        if (data.type === 'assets_config') renderAssets(data.assets || data);
+        if (data.type === 'assets_config') renderAssets(data.assets || data, data);
         if (data.type === 'assets_saved') {
-            renderAssets(data.assets || assetsConfig);
+            renderAssets(data.assets || assetsConfig, data);
             setAssetsMessage(data.message || 'Đã lưu Assets.');
             toast(data.message || 'Đã lưu Assets');
         }
