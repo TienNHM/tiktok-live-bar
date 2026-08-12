@@ -28,6 +28,9 @@ Build/
 # ── Build logs ───────────────────────────────
 build_log.txt
 
+# ── Raw downloads (chuẩn hóa bằng npm run prepare:sprites) ──
+download/
+
 # ── Media lớn (người dùng tự thêm) ──────────
 DJ_MUSIC/*.mp3
 DJ_MUSIC/*.MP3

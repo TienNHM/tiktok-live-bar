@@ -6,8 +6,13 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && node --check src/security.js && node --check src/tiktok/normalize-event.js && node --check src/tiktok/normalize-tikfinity-event.js && node --check src/assets/config.js && node --check public/control.js && node --check scripts/download-mushroom-gifs.js",
+    "check": "node --check server.js && node --check src/security.js && node --check src/tiktok/normalize-event.js && node --check src/tiktok/normalize-tikfinity-event.js && node --check src/assets/config.js && node --check public/control.js && node --check scripts/download-mushroom-gifs.js && node --check scripts/import-gifs-to-unity.js && node --check scripts/import-spritesheets-to-unity.js && node --check scripts/prepare-download-sprites.js",
     "download:gifs": "node scripts/download-mushroom-gifs.js",
+    "import:gifs": "node scripts/import-gifs-to-unity.js",
+    "import:sprites": "node scripts/import-spritesheets-to-unity.js",
+    "prepare:sprites": "node scripts/prepare-download-sprites.js",
+    "assets:sprites": "npm run prepare:sprites && npm run import:sprites -- --force",
+    "assets:sync": "npm run download:gifs && npm run import:gifs",
     "security:smoke": "node scripts/security-smoke.js",
     "test": "npm run check && node --test"
   },
@@ -20,6 +25,7 @@
   "type": "commonjs",
   "dependencies": {
     "express": "^5.2.1",
+    "sharp": "^0.35.3",
     "three": "^0.180.0",
     "tiktok-live-connector": "^2.4.3",
     "ws": "^8.21.1"
