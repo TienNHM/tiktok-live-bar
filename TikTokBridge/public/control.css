@@ -957,6 +957,34 @@ kbd {
 }
 .page-footer a:hover { color: var(--gold); }
 
+/* ─── Asset packs ────────────────────────────────────────── */
+.pack-list { display: grid; gap: 8px; }
+.pack-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.pack-item-body { flex: 1; min-width: 0; }
+.pack-item-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+}
+.pack-item-meta {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.5;
+}
+.pack-item code {
+    font-size: 11px;
+    color: var(--gold);
+}
+
 @media (max-width: 900px) {
     .nav-toggle { display: inline-flex; }
     .tab-nav {

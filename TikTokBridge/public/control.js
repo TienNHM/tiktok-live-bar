@@ -54,6 +54,12 @@ const ui = {
     recentGifts: document.getElementById('recent-gifts'),
     ruleCount: document.getElementById('rule-count'),
     toastHost: document.getElementById('toast-host'),
+    characterPacks: document.getElementById('character-packs'),
+    bannerPacks: document.getElementById('banner-packs'),
+    assetSources: document.getElementById('asset-sources'),
+    assetsSummary: document.getElementById('assets-summary'),
+    assetsMessage: document.getElementById('assets-message'),
+    saveAssets: document.getElementById('save-assets'),
     metrics: {
         events: document.getElementById('metric-events'),
         members: document.getElementById('metric-members'),
@@ -73,6 +79,7 @@ const ui = {
 let socket;
 let reconnectTimer;
 let masterConfig = { joinMode: 'keyword_only', giftAlwaysJoins: true, rules: [] };
+let assetsConfig = { packs: [], sources: [] };
 const recentGifts = new Map();
 let activeUsername = '';
 
@@ -175,6 +182,125 @@ function updateRuleCount() {
     if (!ui.ruleCount) return;
     const count = ui.masterRules.querySelectorAll('.master-rule-row').length;
     ui.ruleCount.textContent = `${count} luật`;
+}
+
+/* ═══ ASSETS ═════════════════════════════════════════════ */
+function setAssetsMessage(msg, error = false) {
+    if (!ui.assetsMessage) return;
+    ui.assetsMessage.textContent = msg || '';
+    ui.assetsMessage.classList.toggle('error', error);
+    ui.assetsMessage.classList.toggle('ok', Boolean(msg) && !error);
+}
+
+function updateAssetsSummary() {
+    if (!ui.assetsSummary) return;
+    const folders = new Set();
+    let banners = 0;
+    for (const pack of assetsConfig.packs || []) {
+        if (!pack.enabled) continue;
+        if (pack.kind === 'characters') {
+            for (const folder of pack.folders || []) folders.add(folder);
+        }
+        if (pack.kind === 'banners') banners = (pack.variants || []).length;
+    }
+    ui.assetsSummary.textContent = `${folders.size} nhân vật · ${banners} banner`;
+}
+
+function renderPackList(container, packs, kind) {
+    if (!container) return;
+    container.replaceChildren();
+    const items = (packs || []).filter(pack => pack.kind === kind);
+    if (items.length === 0) {
+        const empty = document.createElement('span');
+        empty.className = 'empty-state';
+        empty.textContent = 'Chưa có pack nào.';
+        container.append(empty);
+        return;
+    }
+    for (const pack of items) {
+        const row = document.createElement('label');
+        row.className = 'pack-item';
+        const toggle = document.createElement('input');
+        toggle.type = 'checkbox';
+        toggle.checked = pack.enabled !== false;
+        toggle.addEventListener('change', () => {
+            pack.enabled = toggle.checked;
+            updateAssetsSummary();
+        });
+        const body = document.createElement('div');
+        body.className = 'pack-item-body';
+        const title = document.createElement('div');
+        title.className = 'pack-item-title';
+        title.textContent = pack.label || pack.id;
+        const meta = document.createElement('div');
+        meta.className = 'pack-item-meta';
+        if (kind === 'characters') {
+            meta.textContent = `Folders: ${(pack.folders || []).join(', ') || '—'}`;
+        } else {
+            meta.textContent = `Variants: ${(pack.variants || []).join(', ') || '—'} · fallback ${pack.fallbackVariant || 'ice'}`;
+        }
+        body.append(title, meta);
+        row.append(toggle, body);
+        container.append(row);
+    }
+}
+
+function renderSources() {
+    if (!ui.assetSources) return;
+    ui.assetSources.replaceChildren();
+    const sources = assetsConfig.sources || [];
+    if (sources.length === 0) {
+        const empty = document.createElement('span');
+        empty.className = 'empty-state';
+        empty.textContent = 'Chưa có nguồn nào.';
+        ui.assetSources.append(empty);
+        return;
+    }
+    for (const source of sources) {
+        const row = document.createElement('label');
+        row.className = 'pack-item';
+        const toggle = document.createElement('input');
+        toggle.type = 'checkbox';
+        toggle.checked = source.enabled === true || (source.type === 'local' && source.enabled !== false);
+        toggle.addEventListener('change', () => {
+            source.enabled = toggle.checked;
+        });
+        const body = document.createElement('div');
+        body.className = 'pack-item-body';
+        const title = document.createElement('div');
+        title.className = 'pack-item-title';
+        title.textContent = source.label || source.id;
+        const meta = document.createElement('div');
+        meta.className = 'pack-item-meta';
+        const pathInfo = source.type === 'url-manifest' ? source.manifest : source.path;
+        meta.innerHTML = `Type: <code>${source.type || 'local'}</code>${pathInfo ? ` · ${pathInfo}` : ''}${source.notes ? `<br>${source.notes}` : ''}`;
+        body.append(title, meta);
+        row.append(toggle, body);
+        ui.assetSources.append(row);
+    }
+}
+
+function renderAssets(config) {
+    assetsConfig = {
+        packs: Array.isArray(config?.packs) ? config.packs.map(pack => ({ ...pack })) : [],
+        sources: Array.isArray(config?.sources) ? config.sources.map(source => ({ ...source })) : []
+    };
+    renderPackList(ui.characterPacks, assetsConfig.packs, 'characters');
+    renderPackList(ui.bannerPacks, assetsConfig.packs, 'banners');
+    renderSources();
+    updateAssetsSummary();
+}
+
+function readAssetsFromUi() {
+    return {
+        packs: (assetsConfig.packs || []).map(pack => ({ ...pack })),
+        sources: (assetsConfig.sources || []).map(source => ({ ...source }))
+    };
+}
+
+function saveAssets() {
+    if (!send({ type: 'assets_save', assets: readAssetsFromUi() })) return;
+    setAssetsMessage('Đang lưu và áp dụng…');
 }
 
 function updateRuleSource(row) {
@@ -315,6 +441,12 @@ function connectSocket() {
             setMasterMessage(data.message || 'Đã lưu Master.');
             toast(data.message || 'Đã lưu Master Rules');
         }
+        if (data.type === 'assets_config') renderAssets(data.assets || data);
+        if (data.type === 'assets_saved') {
+            renderAssets(data.assets || assetsConfig);
+            setAssetsMessage(data.message || 'Đã lưu Assets.');
+            toast(data.message || 'Đã lưu Assets');
+        }
         if (data.type === 'gift_observed') observeGift(data);
         if (data.type === 'gift_catalog') {
             recentGifts.clear();
@@ -376,6 +508,7 @@ ui.addMasterRule.addEventListener('click', () => {
 });
 ui.saveMaster.addEventListener('click', saveMaster);
 ui.saveMasterSticky?.addEventListener('click', saveMaster);
+ui.saveAssets.addEventListener('click', saveAssets);
 
 document.querySelectorAll('[data-demo-count]').forEach(btn => {
     btn.addEventListener('click', () => {

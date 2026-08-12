@@ -23,7 +23,9 @@ const gameConfig = require('./config/game.json');
 const giftConfig = require('./config/gifts.json');
 const initialMasterConfig = require('./config/master.json');
 const initialObservedGifts = require('./config/observed-gifts.json');
+const initialAssetsConfig = require('./config/assets.json');
 const { normalizeText, sanitizeMasterConfig, resolveMasterRule, applyRule, applyBuiltInChatCommand } = require('./src/master/rules');
+const { sanitizeAssetsConfig, resolveRuntimeAssets } = require('./src/assets/config');
 const {
     sanitizeGameEvent,
     isLoopbackAddress,
@@ -48,6 +50,7 @@ const publicDir = path.join(__dirname, 'public');
 const assetsDir = path.join(__dirname, 'assets');
 const gifsDir = path.join(assetsDir, 'gifs');
 const masterConfigPath = path.join(__dirname, 'config', 'master.json');
+const assetsConfigPath = path.join(__dirname, 'config', 'assets.json');
 const observedGiftsPath = path.join(__dirname, 'config', 'observed-gifts.json');
 const LIVE_PROVIDER = String(process.env.LIVE_PROVIDER || gameConfig.liveProvider || 'tikfinity').toLowerCase();
 const TIKFINITY_WS_URL = String(process.env.TIKFINITY_WS_URL || gameConfig.tikfinityWsUrl || 'ws://127.0.0.1:21213/');
@@ -66,6 +69,7 @@ let connectionStatus = {
 };
 let metrics = createMetrics();
 let masterConfig = sanitizeMasterConfig(initialMasterConfig);
+let assetsConfig = sanitizeAssetsConfig(initialAssetsConfig);
 const recentEventIds = new Map();
 const sessionPlayers = new Map();
 const sessionVipScores = new Map();
@@ -732,17 +736,21 @@ async function handleClientMessage(ws, message) {
         send(ws, { type: 'status', ...connectionStatus });
         send(ws, { type: 'metrics', ...metrics });
         if (ws.role === 'control') send(ws, { type: 'master_config', master: masterConfig });
+        if (ws.role === 'control') send(ws, resolveRuntimeAssets(assetsConfig));
         if (ws.role === 'control') send(ws, giftCatalogMessage());
         if (ws.role === 'overlay') {
             send(ws, createSnapshot());
             send(ws, viewerGuideMessage());
+            send(ws, resolveRuntimeAssets(assetsConfig));
         }
         return;
     }
 
     if (!ws.registered) return send(ws, { type: 'error', message: 'Client chưa đăng ký quyền.' });
 
-    const controlOnly = message.type === 'master_save' || message.type === 'master_test';
+    const controlOnly = message.type === 'master_save'
+        || message.type === 'master_test'
+        || message.type === 'assets_save';
     const operatorOnly = new Set([
         'set_username', 'disconnect_tiktok', 'demo_start', 'demo_stop', 'demo_event', 'reset_game'
     ]).has(message.type);
@@ -759,6 +767,18 @@ async function handleClientMessage(ws, message) {
         broadcast({ type: 'master_config', master: masterConfig });
         broadcast(viewerGuideMessage());
         return send(ws, { type: 'master_saved', message: 'Đã lưu và áp dụng Master.' });
+    }
+
+    if (message.type === 'assets_save') {
+        assetsConfig = sanitizeAssetsConfig(message.assets);
+        await fs.writeFile(assetsConfigPath, `${JSON.stringify(assetsConfig, null, 2)}\n`, 'utf8');
+        const runtime = resolveRuntimeAssets(assetsConfig);
+        broadcast(runtime);
+        return send(ws, {
+            type: 'assets_saved',
+            message: `Đã lưu Assets (${runtime.characterFolders.length} nhân vật, ${runtime.bannerVariants.length} banner).`,
+            ...runtime
+        });
     }
 
     if (message.type === 'master_test') {

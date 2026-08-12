@@ -339,19 +339,20 @@ namespace TikTokLiveGame
         {
             if (wingsRenderer == null || bannerRenderer == null) return;
             bool decorated = giftFocused || topRank > 0 || GiftPower >= 10;
-            string variant = topRank == 1 || GiftPower >= 1000 ? "royal"
+            string preferred = topRank == 1 || GiftPower >= 1000 ? "royal"
                 : topRank == 2 || GiftPower >= 200 ? "fire"
                 : topRank == 3 || GiftPower >= 50 ? "neon"
                 : "ice";
+            string variant = BannerCatalog.ResolveVariant(preferred);
             bannerTextOffsetY = variant switch
             {
                 "royal" => -0.075f,
                 "fire" => -0.025f,
                 _ => -0.01f
             };
-            string wingsAsset = giftFocused ? "Banners/energy-wings-v2" : $"Banners/wings-{variant}";
+            string wingsAsset = BannerCatalog.WingsResourcePath(variant, giftFocused);
             wingsRenderer.sprite = Resources.Load<Sprite>(wingsAsset) ?? Resources.Load<Sprite>("Banners/energy-wings-v2");
-            bannerRenderer.sprite = Resources.Load<Sprite>($"Banners/title-{variant}");
+            bannerRenderer.sprite = Resources.Load<Sprite>(BannerCatalog.TitleResourcePath(variant));
             if (wingsRenderer.sprite != null)
             {
                 float width = wingsRenderer.sprite.bounds.size.x;

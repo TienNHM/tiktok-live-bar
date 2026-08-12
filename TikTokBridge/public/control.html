@@ -23,6 +23,7 @@
     <div class="tab-nav" id="tab-nav" role="tablist">
         <button class="tab-btn active" data-tab="live" role="tab" aria-selected="true">🔴 Live</button>
         <button class="tab-btn" data-tab="rules" role="tab" aria-selected="false">⚙️ Master Rules</button>
+        <button class="tab-btn" data-tab="assets" role="tab" aria-selected="false">🎨 Assets</button>
         <button class="tab-btn" data-tab="testlab" role="tab" aria-selected="false">🧪 Test Lab</button>
         <button class="tab-btn" data-tab="events" role="tab" aria-selected="false">🎯 Events</button>
         <button class="tab-btn" data-tab="session" role="tab" aria-selected="false">📊 Session</button>
@@ -172,6 +173,47 @@
     <div class="sticky-actions" id="rules-sticky">
         <span class="sticky-hint">Thay đổi chưa lưu sẽ mất nếu reload trang.</span>
         <button id="save-master-sticky" class="btn btn-green btn-sm" type="button">✓ Lưu &amp; áp dụng</button>
+    </div>
+</section>
+
+
+<section class="tab-panel" id="tab-assets" role="tabpanel">
+    <div class="page-header page-header-actions">
+        <div>
+            <p class="page-eyebrow">Thư viện</p>
+            <h1 class="page-title">🎨 Assets</h1>
+            <p class="page-desc">Bật/tắt nhóm nhân vật và banner. Nguồn URL chỉ dùng khi chạy script tải.</p>
+        </div>
+        <div class="page-actions">
+            <button id="save-assets" class="btn btn-green btn-sm" type="button">✓ Lưu &amp; áp dụng</button>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+        <div class="card-header">
+            <div>
+                <p class="card-label">Runtime</p>
+                <h2 class="card-title">Packs đang dùng</h2>
+            </div>
+            <p class="help" id="assets-summary" style="margin:0;">0 nhân vật · 0 banner</p>
+        </div>
+        <div id="assets-message" class="master-msg" aria-live="polite"></div>
+        <p class="section-label">🕺 Characters</p>
+        <div id="character-packs" class="pack-list"></div>
+        <div class="divider"></div>
+        <p class="section-label">🖼️ Banners</p>
+        <div id="banner-packs" class="pack-list"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <p class="card-label">Nguồn</p>
+                <h2 class="card-title">Sources</h2>
+            </div>
+        </div>
+        <p class="help" style="margin-bottom:12px;">Local luôn đọc từ Unity Resources. URL catalog chỉ ảnh hưởng <code>npm run download:gifs</code>.</p>
+        <div id="asset-sources" class="pack-list"></div>
     </div>
 </section>
 

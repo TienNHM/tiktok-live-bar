@@ -62,6 +62,12 @@ namespace TikTokLiveGame
 
         private void HandleEvent(TikTokEvent liveEvent)
         {
+            if (liveEvent.type == "assets_config")
+            {
+                CharacterLibrary.ApplyEnabledFolders(liveEvent.characterFolders);
+                BannerCatalog.ApplyConfig(liveEvent.bannerVariants, liveEvent.fallbackBannerVariant);
+                return;
+            }
             if (liveEvent.type == "status") connectionStatus = liveEvent.message;
             if (liveEvent.type is "member" or "chat" or "gift" or "like" or "follow" or "share") events++;
 

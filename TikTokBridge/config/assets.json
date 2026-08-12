@@ -1,0 +1,50 @@
+{
+  "packs": [
+    {
+      "id": "classic",
+      "label": "Classic letters",
+      "kind": "characters",
+      "enabled": true,
+      "folders": ["a", "b", "c", "d", "e", "g", "h", "j", "k"]
+    },
+    {
+      "id": "mushroom",
+      "label": "Mushroom",
+      "kind": "characters",
+      "enabled": true,
+      "folders": ["mushroom_dance_01", "mushroom_dance_15", "mushroom_magic_02"]
+    },
+    {
+      "id": "hanhan",
+      "label": "Hanhan dance",
+      "kind": "characters",
+      "enabled": true,
+      "folders": ["hanhan_video_dance"]
+    },
+    {
+      "id": "banners-default",
+      "label": "Default banners",
+      "kind": "banners",
+      "enabled": true,
+      "variants": ["ice", "neon", "fire", "royal"],
+      "fallbackVariant": "ice"
+    }
+  ],
+  "sources": [
+    {
+      "id": "local-resources",
+      "label": "Unity Resources (local)",
+      "type": "local",
+      "enabled": true,
+      "path": "UnityProject/Assets/Resources"
+    },
+    {
+      "id": "gif-catalog",
+      "label": "GIF URL catalog",
+      "type": "url-manifest",
+      "enabled": false,
+      "manifest": "assets/gifs/catalog.json",
+      "notes": "Chỉ dùng khi chủ động tải; kiểm tra bản quyền trước"
+    }
+  ]
+}
